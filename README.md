@@ -8,10 +8,10 @@ The public facing website itself is fairly simple, it's a static React app displ
 The interesting feature is the management portal.
 
 The photographer is able to log-in using OAuth and dynamically add:
-1. Add new projects
-2. Add photos to that project
-3. Describe the order of the project
-4. Update contact informatoin
+1. New projects
+2. Photos to that project
+3. The order of the photos
+4. Contact informatoin
 # Technologies
 ## Front-End
 
