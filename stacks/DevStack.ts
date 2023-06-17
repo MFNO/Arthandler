@@ -9,8 +9,6 @@ export function DevStack({ stack }: StackContext) {
     primaryIndex: { partitionKey: "ProjectName" },
   });
 
-
-
   // Create the HTTP API
   const api = new Api(stack, "ProjectPhotosApi", {
     defaults: {
@@ -28,12 +26,12 @@ export function DevStack({ stack }: StackContext) {
   const site = new StaticSite(stack, "ReactSite", {
     path: "packages/frontend",
     buildCommand: "npm run build",
-    buildOutput: "build",
+    buildOutput: "dist",
     environment: {
-      REACT_APP_API_URL: api.url,
+      VITE_APP_API_URL: api.url,
     },
   });
-
+  console.log(api.url)
   // Show the URLs in the output
   stack.addOutputs({
     SiteUrl: site.url,
