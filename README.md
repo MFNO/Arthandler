@@ -25,3 +25,5 @@ Authentication is reached via the open OAuth protocol.
 
 ## References
 https://sst.dev/examples/how-to-create-a-reactjs-app-with-serverless.html
+https://oauth.net/code/javascript/
+https://vitejs.dev/guide/
