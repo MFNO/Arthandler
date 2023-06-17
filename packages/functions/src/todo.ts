@@ -1,5 +1,5 @@
 import { ApiHandler } from "sst/node/api";
-import { Todo } from "@ServerlessStack/core/todo";
+import { Todo } from "@ArtHandler/core/todo";
 
 export const create = ApiHandler(async (_evt) => {
   await Todo.create();

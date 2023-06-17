@@ -4,7 +4,9 @@
     "module": "esnext",
     "baseUrl": ".",
     "paths": {
-      "@ServerlessStack/core/*": ["../core/src/*"]
+      "@ArtHandler/core/*": [
+        "../core/src/*"
+      ]
     }
   }
 }
