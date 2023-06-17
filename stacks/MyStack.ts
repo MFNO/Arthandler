@@ -1,29 +1,43 @@
-import { StackContext, Api, EventBus } from "sst/constructs";
+import { Api, StaticSite, StackContext, Table } from "sst/constructs";
 
-export function API({ stack }: StackContext) {
-  const bus = new EventBus(stack, "bus", {
-    defaults: {
-      retries: 10,
+export function DevStack({ stack }: StackContext) {
+  // Create the table
+  const table = new Table(stack, "ProjectPhotos", {
+    fields: {
+      ProjectName: "string",
     },
+    primaryIndex: { partitionKey: "ProjectName" },
   });
 
-  const api = new Api(stack, "api", {
+
+
+  // Create the HTTP API
+  const api = new Api(stack, "ProjectPhotosApi", {
     defaults: {
       function: {
-        bind: [bus],
+        // Bind the table name to our API
+        bind: [table],
       },
     },
     routes: {
-      "GET /": "packages/functions/src/todo.list",
-      "POST /": "packages/functions/src/todo.create",
+      "POST /": "packages/functions/src/lambda.handler",
     },
   });
 
-  bus.subscribe("todo.created", {
-    handler: "packages/functions/src/events/todo-created.handler",
+  // Deploy our React app
+  const site = new StaticSite(stack, "ReactSite", {
+    path: "packages/frontend",
+    buildCommand: "npm run build",
+    buildOutput: "build",
+    environment: {
+      REACT_APP_API_URL: api.url,
+    },
   });
 
+  // Show the URLs in the output
   stack.addOutputs({
+    SiteUrl: site.url,
     ApiEndpoint: api.url,
   });
+
 }
