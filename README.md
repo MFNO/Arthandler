@@ -16,8 +16,11 @@ The website itself is built with a React front-end running on a Vite development
 The CSS framework is Tailwind.
 ## Back-End
 The back-end runs on AWS and is setup via the SST framework.
-It employs some REST APIs accessing a DynamoDB.
+It employs REST APIs accessing a DynamoDB.
 Images are stored in S3.
+## Authentication
+Authentication is reached via the open OAuth protocol.
+
 
 
 ## References
