@@ -7,7 +7,7 @@ import Title from './components/Title/Title'
 
 function App() {
   return (
-    <div className='flex flex-col items-center'>
+    <div className='flex flex-col items-center gap-y-8'>
       <Title></Title>
       <Navigation></Navigation>
       <Carousel></Carousel>
