@@ -18,12 +18,12 @@ export function DevStack({ stack }: StackContext) {
       },
     },
     routes: {
-      "POST /": "packages/functions/src/lambda.handler",
+      "GET /projects": "packages/functions/src/projects/get.handler",
     },
   });
 
   // Deploy our React app
-  const site = new StaticSite(stack, "ReactSite", {
+  new StaticSite(stack, "ReactSite", {
     path: "packages/frontend",
     buildCommand: "npm run build",
     buildOutput: "dist",
@@ -31,10 +31,9 @@ export function DevStack({ stack }: StackContext) {
       VITE_APP_API_URL: api.url,
     },
   });
-  console.log(api.url)
+
   // Show the URLs in the output
   stack.addOutputs({
-    SiteUrl: site.url,
     ApiEndpoint: api.url,
   });
 
