@@ -30,7 +30,7 @@ Authentication is reached via the open OAuth protocol.
 
 
 ## References
-https://sst.dev/examples/how-to-create-a-reactjs-app-with-serverless.html
+https://dynobase.dev/dynamodb-serverless-stack/
 
 https://oauth.net/code/javascript/
 
