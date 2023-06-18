@@ -26,7 +26,6 @@ function Carousel() {
   ]
   return (
     <>
-      <button onClick={test}>test</button>
       <div id="default-carousel" className="relative w-full" data-carousel="static">
         <div className="relative h-[34rem] overflow-hidden rounded-lg">
           {images.map(item =>
@@ -49,13 +48,12 @@ function Carousel() {
           </span>
         </button>
       </div>
-      <div className='flex flex-row h-24 w-full max-w-[100%] overflow-y-hidden overflow-x-scroll'>
+      <div className='noscroll flex flex-row h-24 w-full max-w-[100%] overflow-y-hidden overflow-x-scroll'>
         {images.map(item =>
           <img src={item.url}
-            className="mx-[20px] block height-[96px]" />
+            className="mx-2 block height-[96px]" />
         )}
       </div>
-
     </>
   )
 }
