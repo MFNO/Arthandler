@@ -9,6 +9,6 @@ export default {
     fontFamily: { 'body': ['"Open Sans"'], },
     extend: {},
   },
-  plugins: [],
+  plugins: [require('flowbite/plugin')],
 }
 
