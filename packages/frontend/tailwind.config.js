@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/*.tsx",
     './src/components/**/*.tsx',],
+
   theme: {
     fontFamily: { 'body': ['"Open Sans"'], },
     extend: {},
