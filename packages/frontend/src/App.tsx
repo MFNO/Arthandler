@@ -3,7 +3,6 @@ import CarouselWrapper from "./components/Carousel/Carousel";
 import Footer from "./components/Footer/Footer";
 import Navigation from "./components/Navigation/Navigation";
 import Title from "./components/Title/Title";
-import Line from "./components/Line/Line";
 
 function App() {
   return (

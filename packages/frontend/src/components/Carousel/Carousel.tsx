@@ -13,7 +13,7 @@ function CarouselWrapper() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const images: Photo[] = [
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/9/91/F-15_vertical_deploy.jpg",
+      url: "https://arthandler-photos.s3.amazonaws.com/project1/297412837_1046567292650469_1039863943672349510_n.jpg",
       index: 0,
     },
     {
