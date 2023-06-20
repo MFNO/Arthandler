@@ -1,11 +1,14 @@
-import './Footer.css'
+import "./Footer.css";
 
 function Footer() {
-
   return (
-    <div>Footer</div>
-
-  )
+    <div className="footer flex w-3/4 flex-row justify-between">
+      <p className="font-light text-xs">
+        © Zachary de Guzman. All rights reserved.
+      </p>
+      <div></div>
+    </div>
+  );
 }
 
-export default Footer
+export default Footer;

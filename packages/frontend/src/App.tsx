@@ -7,11 +7,10 @@ import Line from "./components/Line/Line";
 
 function App() {
   return (
-    <div className="flex flex-col items-center gap-y-8">
+    <div className="font-['Open_Sans'] flex flex-col items-center">
       <Title></Title>
       <Navigation></Navigation>
       <CarouselWrapper></CarouselWrapper>
-      <Line></Line>
       <Footer></Footer>
     </div>
   );

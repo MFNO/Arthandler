@@ -61,7 +61,7 @@ function CarouselWrapper() {
       index: 11,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 12,
     },
     {
@@ -69,7 +69,7 @@ function CarouselWrapper() {
       index: 13,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 14,
     },
     {
@@ -77,7 +77,7 @@ function CarouselWrapper() {
       index: 15,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 11,
     },
     {
@@ -85,20 +85,12 @@ function CarouselWrapper() {
       index: 12,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 13,
     },
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 11,
     },
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
@@ -117,7 +109,7 @@ function CarouselWrapper() {
       index: 15,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 11,
     },
     {
@@ -125,11 +117,11 @@ function CarouselWrapper() {
       index: 12,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 13,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 14,
     },
     {
@@ -137,7 +129,7 @@ function CarouselWrapper() {
       index: 15,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 11,
     },
     {
@@ -145,7 +137,7 @@ function CarouselWrapper() {
       index: 12,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 13,
     },
     {
@@ -153,67 +145,7 @@ function CarouselWrapper() {
       index: 14,
     },
     {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
       index: 15,
     },
   ];
@@ -287,7 +219,7 @@ function CarouselWrapper() {
     <>
       <div
         id="default-carousel"
-        className="relative w-full carousel"
+        className="relative w-full carousel mb-8"
         data-carousel="static"
       >
         <div className="relative h-[34rem] overflow-hidden rounded-lg">
@@ -366,8 +298,8 @@ function CarouselWrapper() {
             onClick={() => setCarouselItem(index)}
             src={item.url}
             className={`${
-              index === selectedIndex && "opacity-50"
-            } inline-block mx-1 h-24`}
+              index === selectedIndex ? "opacity-50" : ""
+            } inline-block mx-1 h-24 cursor-pointer`}
           />
         ))}
       </div>

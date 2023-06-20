@@ -1,14 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/*.tsx",
-    './src/components/**/*.tsx',],
+  content: ["./index.html", "./src/*.tsx", "./src/components/**/*.tsx"],
 
   theme: {
-    fontFamily: { 'body': ['"Open Sans"'], },
+    fontFamily: { body: ['"Open Sans"'] },
     extend: {},
   },
-  plugins: [require('flowbite/plugin')],
-}
-
+  plugins: [require("flowbite/plugin")],
+};

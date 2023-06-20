@@ -14,3 +14,7 @@
 .carousel {
     background-color: #f7f7f7;
 }
+
+#scroll-container img:first-child {
+    margin-left: 13vw;
+  }
