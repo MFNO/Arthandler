@@ -7,6 +7,8 @@ import type {
   CarouselInterface,
 } from "flowbite";
 import { Carousel } from "flowbite";
+import Line from "../Line/Line";
+
 function CarouselWrapper() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const images: Photo[] = [
@@ -74,6 +76,152 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
+    ,
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
+    ,
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
+    ,
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
+    ,
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
+    ,
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
+    ,
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 11,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 12,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 13,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 14,
+    },
+    {
+      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
+      index: 15,
+    },
   ];
 
   const [carousel, setCarousel] = React.useState<CarouselInterface>();
@@ -88,6 +236,7 @@ function CarouselWrapper() {
     }
     carousel.slideTo(index);
     setSelectedIndex(index);
+    setScroll(index);
   };
 
   const next = () => {
@@ -100,11 +249,23 @@ function CarouselWrapper() {
     }
     carousel.slideTo(index);
     setSelectedIndex(index);
-    const scroll = document.getElementById("scroll-container");
-    if (scroll) {
-      scroll.scrollLeft -= 20;
-    }
+    setScroll(index);
+  };
 
+  const setScroll = (index: number) => {
+    const vw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const scroll = document.getElementById("scroll-container");
+    const selectedImage = document.getElementById(`scroll-image-${index}`);
+    if (scroll && selectedImage) {
+      scroll.scroll({
+        top: 0,
+        left: selectedImage.offsetLeft - (vw + -selectedImage.clientWidth) / 2,
+        behavior: "smooth",
+      });
+    }
   };
 
   React.useEffect(() => {
@@ -125,13 +286,14 @@ function CarouselWrapper() {
     if (!carousel) return;
     carousel.slideTo(index);
     setSelectedIndex(index);
+    setScroll(index);
   };
 
   return (
     <>
       <div
         id="default-carousel"
-        className="relative w-full"
+        className="relative w-full carousel"
         data-carousel="static"
       >
         <div className="relative h-[34rem] overflow-hidden rounded-lg">
@@ -152,12 +314,12 @@ function CarouselWrapper() {
         <button
           onClick={() => prev()}
           type="button"
-          className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+          className="absolute hidden md:flex top-0 left-0 z-30 items-center justify-center h-full px-4 cursor-pointer group"
         >
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-black/30 dark:bg-gray-800/30 group-hover:bg-black/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-black dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+          <span className="inline-flex items-center justify-center rounded-full w-10 h-10 bg-black/30 dark:bg-gray-800/30">
             <svg
               aria-hidden="true"
-              className="w-5 h-5 text-black sm:w-6 sm:h-6 dark:text-gray-800"
+              className="text-black w-6 h-6 dark:text-gray-800"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -176,9 +338,9 @@ function CarouselWrapper() {
         <button
           onClick={() => next()}
           type="button"
-          className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+          className="absolute hidden top-0 right-0 z-30 md:flex items-center justify-center h-full px-4 cursor-pointer"
         >
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-black/30 dark:bg-gray-800/30 group-hover:bg-black/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-black dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+          <span className="inline-flex items-center justify-center rounded-full w-10 h-10 bg-black/30 dark:bg-gray-800/30">
             <svg
               aria-hidden="true"
               className="w-5 h-5 text-black sm:w-6 sm:h-6 dark:text-gray-800"
@@ -197,12 +359,23 @@ function CarouselWrapper() {
             <span className="sr-only">Next</span>
           </span>
         </button>
-      </div >
-      <div id="scroll-container" className='noscroll whitespace-nowrap overflow-y-hidden overflow-x-scroll'>
-        {images.map((item, index) =>
-          <img key={index} onClick={() => setCarouselItem(index)} src={item.url}
-            className={`${index === selectedIndex && "opacity-50"} inline-block mx-1 h-24`} />
-        )}
+      </div>
+      <Line></Line>
+      <div
+        id="scroll-container"
+        className="scroll-smooth noscroll whitespace-nowrap overflow-y-hidden overflow-x-scroll"
+      >
+        {images.map((item, index) => (
+          <img
+            id={`scroll-image-${index}`}
+            key={index}
+            onClick={() => setCarouselItem(index)}
+            src={item.url}
+            className={`${
+              index === selectedIndex && "opacity-50"
+            } inline-block mx-1 h-24`}
+          />
+        ))}
       </div>
     </>
   );

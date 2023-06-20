@@ -10,3 +10,7 @@
     display: none;
     /* Safari and Chrome */
 }
+
+.carousel {
+    background-color: #f7f7f7;
+}
