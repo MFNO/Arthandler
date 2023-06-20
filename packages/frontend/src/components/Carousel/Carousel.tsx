@@ -100,16 +100,11 @@ function CarouselWrapper() {
     }
     carousel.slideTo(index);
     setSelectedIndex(index);
-    const scrollContainer = document.getElementById("scroll-container");
-    console.log(scrollContainer?.scrollLeft);
-    var leftPos = scrollContainer.scrollLeft;
-    console.log(leftPos);
-    scrollContainer?.animate(
-      {
-        scrollLeft: leftPos + 200,
-      },
-      800
-    );
+    const scroll = document.getElementById("scroll-container");
+    if (scroll) {
+      scroll.scrollLeft -= 20;
+    }
+
   };
 
   React.useEffect(() => {
@@ -202,21 +197,12 @@ function CarouselWrapper() {
             <span className="sr-only">Next</span>
           </span>
         </button>
-      </div>
-      <div
-        id="scroll-container"
-        className="noscroll whitespace-nowrap overflow-y-hidden overflow-x-scroll"
-      >
-        {images.map((item, index) => (
-          <div id={`image-scroll-${index}`} className="inline-block mx-1">
-            <img
-              key={index}
-              onClick={() => setCarouselItem(index)}
-              src={item.url}
-              className={`${index === selectedIndex && "opacity-50"} h-24`}
-            />
-          </div>
-        ))}
+      </div >
+      <div id="scroll-container" className='noscroll whitespace-nowrap overflow-y-hidden overflow-x-scroll'>
+        {images.map((item, index) =>
+          <img key={index} onClick={() => setCarouselItem(index)} src={item.url}
+            className={`${index === selectedIndex && "opacity-50"} inline-block mx-1 h-24`} />
+        )}
       </div>
     </>
   );
