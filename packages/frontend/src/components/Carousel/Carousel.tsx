@@ -96,7 +96,6 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
-    ,
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 11,
@@ -117,7 +116,6 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
-    ,
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 11,
@@ -138,7 +136,6 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
-    ,
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 11,
@@ -159,7 +156,6 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
-    ,
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 11,
@@ -180,7 +176,6 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
-    ,
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 11,
@@ -201,7 +196,6 @@ function CarouselWrapper() {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 15,
     },
-    ,
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
       index: 11,
