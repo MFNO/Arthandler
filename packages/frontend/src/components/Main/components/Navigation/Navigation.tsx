@@ -1,5 +1,5 @@
 import "./Navigation.css";
-import { Project } from "../../types/Project";
+import { Project } from "../../../../types/Project";
 import { Navbar } from 'flowbite-react';
 
 type NavigationProps = {
