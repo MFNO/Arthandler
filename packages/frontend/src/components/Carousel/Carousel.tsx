@@ -9,8 +9,13 @@ import type {
 } from "flowbite";
 import { Carousel } from "flowbite";
 import Line from "../Line/Line";
+import { Project } from "../../types/Project";
 
-function CarouselWrapper() {
+type CarouselWrapperProps = {
+  project: Project;
+}
+
+function CarouselWrapper(props: CarouselWrapperProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [photos, setPhotos] = useState<Array<Photo>>([]);
@@ -63,7 +68,7 @@ function CarouselWrapper() {
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_APP_API_URL + "/projects/Project01/photos")
+      .get(`${import.meta.env.VITE_APP_API_URL}/projects/${props.project.projectId}/photos`)
       .then((response) => {
         setPhotos(response.data.Photos);
         setLoading(false);
@@ -71,21 +76,23 @@ function CarouselWrapper() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [props.project.projectId]);
 
   useEffect(() => {
+    setSelectedIndex(0);
     if (photos.length <= 0) return;
     let carouselItems = photos.flatMap<CarouselItem>((image, index) => {
-      console.log(index);
       const element = document.getElementById(`carousel-item-${index}`);
       if (image && element) {
-        console.log(element);
         return { position: index, el: element };
       }
       return [];
     });
-    setCarousel(new Carousel(carouselItems));
-  }, [photos]);
+    const options: CarouselOptions = {
+      defaultPosition: 0
+    }
+    setCarousel(new Carousel(carouselItems, options));
+  }, [photos, props.project.projectId]);
 
   const setCarouselItem = (index: number) => {
     if (!carousel) return;
@@ -178,9 +185,8 @@ function CarouselWrapper() {
             key={index}
             onClick={() => setCarouselItem(index)}
             src={item.url}
-            className={`${
-              index === selectedIndex ? "opacity-50" : ""
-            } inline-block mx-1 h-24 cursor-pointer`}
+            className={`${index === selectedIndex ? "opacity-50" : ""
+              } inline-block mx-1 h-24 cursor-pointer`}
           />
         ))}
       </div>

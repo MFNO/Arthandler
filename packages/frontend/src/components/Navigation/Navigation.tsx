@@ -1,21 +1,14 @@
-import { useEffect, useState } from "react";
 import "./Navigation.css";
-import axios from "axios";
 import { Project } from "../../types/Project";
 
-function Navigation() {
-  const [menuItems, setMenuItems] = useState<Array<Project>>([]);
+type NavigationProps = {
+  projects: Project[];
+  setSelectedProject: (project: Project) => void;
+};
 
-  useEffect(() => {
-    axios
-      .get(import.meta.env.VITE_APP_API_URL + "/projects")
-      .then((response) => {
-        setMenuItems(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+function Navigation(props: NavigationProps) {
+
+  if (!props.projects) return <></>
 
   return (
     <nav className="w-full bg-white border-gray-200 dark:bg-gray-900 mb-8">
@@ -48,10 +41,10 @@ function Navigation() {
           id="navbar-default"
         >
           <ul className="font-light flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            {menuItems.map((menuItem, index) => (
+            {props.projects.map((project, index) => (
               <li key={index}>
-                <a href="#" className="text-black" aria-current="page">
-                  {menuItem.ProjectName}
+                <a onClick={() => props.setSelectedProject(project)} href="#" className="text-black" aria-current="page">
+                  {project.projectName}
                 </a>
               </li>
             ))}

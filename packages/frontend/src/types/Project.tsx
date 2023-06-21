@@ -1,4 +1,5 @@
 export interface Project {
-    ProjectName: string;
-    Index: number;
+    projectName: string;
+    projectId: string;
+    projectIndex: number;
 }

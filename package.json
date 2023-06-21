@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "sst dev --aws-profile ArtHandlerDev",
+    "dev": "sst dev --stage dev --profile ArtHandlerDev",
     "build": "sst build --profile ArtHandlerDev",
-    "deploy": "sst deploy --profile ArtHandlerDev",
+    "deploy": "sst deploy --stage work --profile ArtHandlerDev",
     "remove": "sst remove --profile ArtHandlerDev",
     "console": "sst console --profile ArtHandlerDev",
     "typecheck": "tsc --noEmit"

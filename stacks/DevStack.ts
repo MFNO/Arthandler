@@ -4,14 +4,22 @@ import { Api, StaticSite, StackContext, Table, Bucket } from "sst/constructs";
 export function DevStack({ stack }: StackContext) {
   // Create the table
   const table = new Table(stack, "ProjectPhotos", {
-    fields: {
-      ProjectName: "string",
+    cdk:
+    {
+      table: {
+        tableName: stack.stage + "-projects"
+      }
     },
-    primaryIndex: { partitionKey: "ProjectName" },
+    fields: {
+      projectId: "string",
+      projectName: "string",
+      projectIndex: "number"
+    },
+    primaryIndex: { partitionKey: "projectId" },
   });
 
   // Create the HTTP API
-  const api = new Api(stack, "ProjectPhotosApi", {
+  const api = new Api(stack, "ProjectsApi", {
     defaults: {
       function: {
         // Bind the table name to our API
@@ -20,13 +28,23 @@ export function DevStack({ stack }: StackContext) {
     },
     routes: {
       "GET /projects": "packages/functions/src/projects/get.handler",
-      "GET /projects/{ProjectId}/photos":
+      "GET /projects/{projectId}/photos":
         "packages/functions/src/photos/get.handler",
     },
   });
 
   //Create bucket to host photos
   const photoBucket = new Bucket(stack, "Photos", {
+    cdk: {
+      bucket: {
+        blockPublicAccess: {
+          blockPublicAcls: true,
+          blockPublicPolicy: true,
+          restrictPublicBuckets: false,
+          ignorePublicAcls: true
+        }
+      }
+    },
     name: "arthandler-photos",
     cors: [
       {
