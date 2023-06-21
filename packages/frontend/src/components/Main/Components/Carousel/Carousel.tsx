@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Carousel.css";
-import { Photo } from "../../types/Photo";
+import { Photo } from "../../../../types/Photo";
 import type {
   CarouselItem,
   CarouselOptions,
@@ -9,7 +9,7 @@ import type {
 } from "flowbite";
 import { Carousel } from "flowbite";
 import Line from "../Line/Line";
-import { Project } from "../../types/Project";
+import { Project } from "../../../../types/Project";
 
 type CarouselWrapperProps = {
   project: Project;
