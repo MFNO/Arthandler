@@ -25,8 +25,9 @@ It employs REST APIs accessing a DynamoDB.
 
 Images are stored in S3.
 ## Authentication
-Authentication is reached via the open OAuth protocol.
+This app is designed to only be used by one person (for now).
 
+So the app is built on a simple login-only system.
 
 
 ## References

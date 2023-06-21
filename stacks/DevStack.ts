@@ -3,7 +3,7 @@ import { Api, StaticSite, StackContext, Table, Bucket } from "sst/constructs";
 
 export function DevStack({ stack }: StackContext) {
   // Create the table
-  const table = new Table(stack, "ProjectPhotos", {
+  const projectsTable = new Table(stack, "ProjectPhotos", {
     cdk:
     {
       table: {
@@ -18,18 +18,43 @@ export function DevStack({ stack }: StackContext) {
     primaryIndex: { partitionKey: "projectId" },
   });
 
-  // Create the HTTP API
-  const api = new Api(stack, "ProjectsApi", {
+  const usersTable = new Table(stack, "Users", {
+    cdk:
+    {
+      table: {
+        tableName: stack.stage + "-users"
+      }
+    },
+    fields: {
+      username: "string",
+      password: "string",
+    },
+    primaryIndex: { partitionKey: "username" },
+  });
+
+
+  const projectsApi = new Api(stack, "ProjectsApi", {
     defaults: {
       function: {
-        // Bind the table name to our API
-        bind: [table],
+        bind: [projectsTable],
       },
     },
     routes: {
       "GET /projects": "packages/functions/src/projects/get.handler",
       "GET /projects/{projectId}/photos":
         "packages/functions/src/photos/get.handler",
+    },
+  });
+
+
+  const usersApi = new Api(stack, "UsersApi", {
+    defaults: {
+      function: {
+        bind: [usersTable],
+      },
+    },
+    routes: {
+      "POST /login": "packages/functions/src/login/post.handler",
     },
   });
 
@@ -75,13 +100,14 @@ export function DevStack({ stack }: StackContext) {
     bind: [photoBucket],
     buildOutput: "dist",
     environment: {
-      VITE_APP_API_URL: api.url,
+      VITE_APP_API_URL: projectsApi.url,
     },
   });
 
   // Show the URLs in the output
   stack.addOutputs({
-    ApiEndpoint: api.url,
+    ProjectsApiEndpoint: projectsApi.url,
+    UsersApiEndpoint: usersApi.url,
     BucketUrl: photoBucket.cdk.bucket.urlForObject(),
   });
 }
