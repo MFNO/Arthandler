@@ -114,6 +114,7 @@ function CarouselWrapper(props: CarouselWrapperProps) {
 
   return (
     <>
+
       <div
         id="default-carousel"
         className="relative w-full carousel mb-8"
