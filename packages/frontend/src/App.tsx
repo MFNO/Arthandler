@@ -1,12 +1,19 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Main from "./components/Main/Main";
+import Login from "./components/Login/login";
 
 
 function App() {
 
   return (
     <>
-      <Main />
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Main />} />
+          <Route path="login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
