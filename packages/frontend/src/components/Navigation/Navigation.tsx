@@ -4,11 +4,12 @@ import { Project } from "../../types/Project";
 type NavigationProps = {
   projects: Project[];
   setSelectedProject: (project: Project) => void;
+  selectedProject: Project;
 };
 
 function Navigation(props: NavigationProps) {
 
-  if (!props.projects) return <></>
+  if (!props.projects || !props.selectedProject || !props.setSelectedProject) return <></>
 
   return (
     <nav className="w-full bg-white border-gray-200 dark:bg-gray-900 mb-8">
@@ -43,7 +44,7 @@ function Navigation(props: NavigationProps) {
           <ul className="font-light flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             {props.projects.map((project, index) => (
               <li key={index}>
-                <a onClick={() => props.setSelectedProject(project)} href="#" className="text-black" aria-current="page">
+                <a onClick={() => props.setSelectedProject(project)} href="#" className={`${props.selectedProject.projectId === project.projectId ? "text-gray-400" : "text-gray-900"}`} aria-current="page">
                   {project.projectName}
                 </a>
               </li>
@@ -51,7 +52,7 @@ function Navigation(props: NavigationProps) {
           </ul>
         </div>
       </div>
-    </nav>
+    </nav >
   );
 }
 

@@ -16,7 +16,6 @@ function App() {
     axios
       .get(import.meta.env.VITE_APP_API_URL + "/projects")
       .then((response) => {
-        console.log(response)
         setProjects(response.data);
         setSelectedProject(response.data[0])
       })
@@ -28,7 +27,7 @@ function App() {
   return (
     <div className="font-['Open_Sans'] flex flex-col items-center">
       <Title></Title>
-      <Navigation projects={projects} setSelectedProject={setSelectedProject} ></Navigation>
+      <Navigation selectedProject={selectedProject} projects={projects} setSelectedProject={setSelectedProject} ></Navigation>
       <CarouselWrapper project={selectedProject}></CarouselWrapper>
       <Footer></Footer>
     </div>
