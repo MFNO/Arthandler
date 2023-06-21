@@ -17,7 +17,7 @@ The photographer is able to log-in using OAuth and dynamically add:
 
 The website itself is built with a React front-end running on a Vite development server. 
 
-The CSS framework is Tailwind.
+The UI components come partly from Flowbite or are custom designed using Tailwind CSS.
 ## Back-End
 The back-end runs on AWS and is setup via the SST framework.
 
@@ -33,7 +33,7 @@ So the app is built on a simple login-only system.
 ## References
 https://dynobase.dev/dynamodb-serverless-stack/
 
-https://oauth.net/code/javascript/
+https://www.robinwieruch.de/react-router-private-routes/
 
 https://vitejs.dev/guide/
 
