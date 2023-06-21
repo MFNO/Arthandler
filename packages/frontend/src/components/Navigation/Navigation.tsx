@@ -13,9 +13,9 @@ function Navigation(props: NavigationProps) {
   if (!props.projects || !props.selectedProject || !props.setSelectedProject) return <></>
 
   return (
-    <Navbar    >
+    <Navbar className="w-full bg-white border-gray-200 dark:bg-gray-900 mb-8">
       <Navbar.Brand>
-        <span className="self-center flex whitespace-nowrap text-xl font-semibold dark:text-white md:hidden">
+        <span className="self-center flex whitespace-nowrap text-xl dark:text-white md:hidden">
           De Guzman
         </span>
       </Navbar.Brand>
@@ -24,7 +24,7 @@ function Navigation(props: NavigationProps) {
       </div>
       <Navbar.Collapse>
         {props.projects.map((project, index) => (
-          <Navbar.Link key={index} onClick={() => props.setSelectedProject(project)} href="#" className={`${props.selectedProject.projectId === project.projectId ? " text-gray-400" : "text-gray-900"}`}>
+          <Navbar.Link key={index} onClick={() => props.setSelectedProject(project)} href="#" className={`font-light text-lg ${props.selectedProject.projectId === project.projectId ? " text-gray-400" : "text-gray-900"}`}>
             {project.projectName}
           </Navbar.Link>
         ))}
