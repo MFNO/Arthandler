@@ -1,4 +1,5 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./Carousel.css";
 import { Photo } from "../../types/Photo";
 import type {
@@ -10,153 +11,19 @@ import { Carousel } from "flowbite";
 import Line from "../Line/Line";
 
 function CarouselWrapper() {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const images: Photo[] = [
-    {
-      url: "https://arthandler-photos.s3.amazonaws.com/project1/297412837_1046567292650469_1039863943672349510_n.jpg",
-      index: 0,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 1,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/An_Experiment_on_a_Bird_in_an_Air_Pump_by_Joseph_Wright_of_Derby%2C_1768.jpg/1920px-An_Experiment_on_a_Bird_in_an_Air_Pump_by_Joseph_Wright_of_Derby%2C_1768.jpg",
-      index: 2,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 3,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Thuringia_Schmalkalden_asv2020-07_img18_Schloss_Wilhelmsburg.jpg/1000px-Thuringia_Schmalkalden_asv2020-07_img18_Schloss_Wilhelmsburg.jpg",
-      index: 4,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Mermaid_Parade_%2860132%29.jpg/1024px-Mermaid_Parade_%2860132%29.jpg",
-      index: 5,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/A_GOLDEN_SPIDER_USING_ITS_VERY_OWN_RAINBOW_TO_CATCH_PREY.jpg/1227px-A_GOLDEN_SPIDER_USING_ITS_VERY_OWN_RAINBOW_TO_CATCH_PREY.jpg",
-      index: 6,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/DOUBLE_RAINBOW.tif/lossy-page1-1515px-DOUBLE_RAINBOW.tif.jpg",
-      index: 7,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/9/91/F-15_vertical_deploy.jpg",
-      index: 8,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 9,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/An_Experiment_on_a_Bird_in_an_Air_Pump_by_Joseph_Wright_of_Derby%2C_1768.jpg/1920px-An_Experiment_on_a_Bird_in_an_Air_Pump_by_Joseph_Wright_of_Derby%2C_1768.jpg",
-      index: 10,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 15,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 11,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 12,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 13,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Priestley.jpg",
-      index: 14,
-    },
-    {
-      url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG/1920px-Triceratops_Specimen_at_the_Houston_Museum_of_Natural_Science.JPG",
-      index: 15,
-    },
-  ];
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const [carousel, setCarousel] = React.useState<CarouselInterface>();
+  const [photos, setPhotos] = useState<Array<Photo>>([]);
+
+  const [carousel, setCarousel] = useState<CarouselInterface>();
+
+  const [loading, setLoading] = useState(true);
 
   const prev = () => {
     if (!carousel) return;
     let index;
     if (selectedIndex === 0) {
-      index = images.length - 1;
+      index = photos.length - 1;
     } else {
       index = selectedIndex - 1;
     }
@@ -168,7 +35,7 @@ function CarouselWrapper() {
   const next = () => {
     if (!carousel) return;
     let index;
-    if (selectedIndex === images.length - 1) {
+    if (selectedIndex === photos.length - 1) {
       index = 0;
     } else {
       index = selectedIndex + 1;
@@ -194,19 +61,31 @@ function CarouselWrapper() {
     }
   };
 
-  React.useEffect(() => {
-    let carouselItems = images.flatMap<CarouselItem>((image, index) => {
+  useEffect(() => {
+    axios
+      .get(import.meta.env.VITE_APP_API_URL + "/projects/Project01/photos")
+      .then((response) => {
+        setPhotos(response.data.Photos);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (photos.length <= 0) return;
+    let carouselItems = photos.flatMap<CarouselItem>((image, index) => {
+      console.log(index);
       const element = document.getElementById(`carousel-item-${index}`);
       if (image && element) {
+        console.log(element);
         return { position: index, el: element };
       }
       return [];
     });
-    const options: CarouselOptions = {
-      defaultPosition: 0,
-    };
-    setCarousel(new Carousel(carouselItems, options));
-  }, []);
+    setCarousel(new Carousel(carouselItems));
+  }, [photos]);
 
   const setCarouselItem = (index: number) => {
     if (!carousel) return;
@@ -214,6 +93,8 @@ function CarouselWrapper() {
     setSelectedIndex(index);
     setScroll(index);
   };
+
+  if (loading) return <></>;
 
   return (
     <>
@@ -223,7 +104,7 @@ function CarouselWrapper() {
         data-carousel="static"
       >
         <div className="relative h-[34rem] overflow-hidden rounded-lg">
-          {images.map((item, index) => (
+          {photos.map((item, index) => (
             <div
               id={`carousel-item-${index}`}
               key={index}
@@ -291,7 +172,7 @@ function CarouselWrapper() {
         id="scroll-container"
         className="scroll-smooth noscroll whitespace-nowrap overflow-y-hidden overflow-x-scroll"
       >
-        {images.map((item, index) => (
+        {photos.map((item, index) => (
           <img
             id={`scroll-image-${index}`}
             key={index}

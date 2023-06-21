@@ -20,6 +20,8 @@ export function DevStack({ stack }: StackContext) {
     },
     routes: {
       "GET /projects": "packages/functions/src/projects/get.handler",
+      "GET /projects/{ProjectId}/photos":
+        "packages/functions/src/photos/get.handler",
     },
   });
 
