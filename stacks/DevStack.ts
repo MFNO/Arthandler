@@ -51,6 +51,7 @@ export function DevStack({ stack }: StackContext) {
     },
     routes: {
       "POST /login": "packages/functions/src/login/post.handler",
+      "POST /password": "packages/functions/src/password/post.handler",
     },
   });
 

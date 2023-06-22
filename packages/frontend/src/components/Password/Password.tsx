@@ -1,16 +1,22 @@
 import { useState } from "react";
-import "./Login.css";
+import "./Password.css";
 import axios from "axios";
 import { Button } from "flowbite-react";
 import { Outlet, Link } from "react-router-dom";
-function Login() {
-  const [form, setForm] = useState({ username: "", password: "" });
+
+function Password() {
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+    newPassword: "",
+  });
+
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = () => {
     setLoading(true);
     axios
-      .post(import.meta.env.VITE_APP_USERS_API_URL + "/login", form)
+      .post(import.meta.env.VITE_APP_USERS_API_URL + "/password", form)
       .then(function (response) {
         console.log(response);
         setLoading(false);
@@ -34,12 +40,22 @@ function Login() {
           />
         </div>
         <div className="flex flex-col">
-          <label>Password:</label>
+          <label>Old Password:</label>
           <input
             type="text"
             value={form.password}
             onChange={(event) =>
               setForm({ ...form, password: event.target.value })
+            }
+          />
+        </div>
+        <div className="flex flex-col">
+          <label>New Password:</label>
+          <input
+            type="text"
+            value={form.newPassword}
+            onChange={(event) =>
+              setForm({ ...form, newPassword: event.target.value })
             }
           />
         </div>
@@ -75,9 +91,9 @@ function Login() {
               </button>
               <Link
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                to="/password"
+                to="/login"
               >
-                Update Password
+                Login
               </Link>
             </>
           )}
@@ -88,4 +104,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Password;
