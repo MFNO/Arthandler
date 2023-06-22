@@ -4,26 +4,24 @@ import { Api, StaticSite, StackContext, Table, Bucket } from "sst/constructs";
 export function DevStack({ stack }: StackContext) {
   // Create the table
   const projectsTable = new Table(stack, "ProjectPhotos", {
-    cdk:
-    {
+    cdk: {
       table: {
-        tableName: stack.stage + "-projects"
-      }
+        tableName: stack.stage + "-projects",
+      },
     },
     fields: {
       projectId: "string",
       projectName: "string",
-      projectIndex: "number"
+      projectIndex: "number",
     },
     primaryIndex: { partitionKey: "projectId" },
   });
 
   const usersTable = new Table(stack, "Users", {
-    cdk:
-    {
+    cdk: {
       table: {
-        tableName: stack.stage + "-users"
-      }
+        tableName: stack.stage + "-users",
+      },
     },
     fields: {
       username: "string",
@@ -31,7 +29,6 @@ export function DevStack({ stack }: StackContext) {
     },
     primaryIndex: { partitionKey: "username" },
   });
-
 
   const projectsApi = new Api(stack, "ProjectsApi", {
     defaults: {
@@ -45,7 +42,6 @@ export function DevStack({ stack }: StackContext) {
         "packages/functions/src/photos/get.handler",
     },
   });
-
 
   const usersApi = new Api(stack, "UsersApi", {
     defaults: {
@@ -66,9 +62,9 @@ export function DevStack({ stack }: StackContext) {
           blockPublicAcls: true,
           blockPublicPolicy: true,
           restrictPublicBuckets: false,
-          ignorePublicAcls: true
-        }
-      }
+          ignorePublicAcls: true,
+        },
+      },
     },
     name: "arthandler-photos",
     cors: [
@@ -100,11 +96,12 @@ export function DevStack({ stack }: StackContext) {
     bind: [photoBucket],
     buildOutput: "dist",
     environment: {
-      VITE_APP_API_URL: projectsApi.url,
+      VITE_APP_PROJECTS_API_URL: projectsApi.url,
+      VITE_APP_USERS_API_URL: usersApi.url,
     },
   });
 
-  // Show the URLs in the output
+  // Show data in the output
   stack.addOutputs({
     ProjectsApiEndpoint: projectsApi.url,
     UsersApiEndpoint: usersApi.url,

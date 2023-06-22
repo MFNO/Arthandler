@@ -68,7 +68,7 @@ function CarouselWrapper(props: CarouselWrapperProps) {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_APP_API_URL}/projects/${
+        `${import.meta.env.VITE_APP_PROJECTS_API_URL}/projects/${
           props.project.projectId
         }/photos`
       )
@@ -117,6 +117,7 @@ function CarouselWrapper(props: CarouselWrapperProps) {
   };
 
   const updateCarouselState = (index: number) => {
+    if (!carousel) return;
     carousel.slideTo(index);
     setSelectedIndex(index);
     setScroll(index);
