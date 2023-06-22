@@ -102,16 +102,20 @@ function CarouselWrapper(props: CarouselWrapperProps) {
     setScroll(index);
     setSelectedIndex(index);
 
-    if (selectedIndex < index) {
-      for (let x = selectedIndex; x <= index; x++) {
-        if (x !== selectedIndex) await delay(200);
-        carousel.slideTo(x);
+    if (Math.abs(index - selectedIndex) > 2) {
+      carousel.slideTo(index);
+    } else {
+      if (selectedIndex < index) {
+        for (let x = selectedIndex; x <= index; x++) {
+          if (x !== selectedIndex) await delay(50);
+          carousel.slideTo(x);
+        }
       }
-    }
-    if (selectedIndex > index) {
-      for (let x = selectedIndex; x >= index; x--) {
-        if (x !== selectedIndex) await delay(200);
-        carousel.slideTo(x);
+      if (selectedIndex > index) {
+        for (let x = selectedIndex; x >= index; x--) {
+          if (x !== selectedIndex) await delay(50);
+          carousel.slideTo(x);
+        }
       }
     }
   };
