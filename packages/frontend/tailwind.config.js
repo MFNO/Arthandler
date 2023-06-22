@@ -1,6 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/*.tsx", "./src/components/**/*.tsx", "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./index.html",
+    "./src/*.tsx",
+    "./src/components/**/*.tsx",
+    "node_modules/flowbite/**/*.{js,jsx,ts,tsx}",
+    "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
+  ],
 
   theme: {
     fontFamily: { body: ['"Open Sans"'] },
