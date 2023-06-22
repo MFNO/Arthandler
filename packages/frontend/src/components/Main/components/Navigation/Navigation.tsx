@@ -24,7 +24,7 @@ function Navigation(props: NavigationProps) {
       </div>
       <Navbar.Collapse>
         {props.projects.map((project, index) => (
-          <Navbar.Link key={index} onClick={() => props.setSelectedProject(project)} href="#" className={`font-light text-lg ${props.selectedProject.projectId === project.projectId ? " text-gray-400" : "text-gray-900"}`}>
+          <Navbar.Link key={index} onClick={() => props.setSelectedProject(project)} href="#" className={`font-light border-none text-lg ${props.selectedProject.projectId === project.projectId ? " text-gray-400" : "text-gray-800"}`}>
             {project.projectName}
           </Navbar.Link>
         ))}

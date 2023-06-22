@@ -5,7 +5,6 @@ function Login() {
     const [form, setForm] = useState({ username: "", password: "" })
 
     const handleSubmit = () => {
-        console.log("test")
         console.log(form)
     }
     return (<form onSubmit={handleSubmit}>

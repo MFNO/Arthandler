@@ -23,7 +23,9 @@ function CarouselWrapper(props: CarouselWrapperProps) {
   const [carousel, setCarousel] = useState<CarouselInterface>();
 
   const [loading, setLoading] = useState(true);
-
+  const delay = (ms: number) => new Promise(
+    resolve => setTimeout(resolve, ms)
+  );
   const prev = () => {
     if (!carousel) return;
     let index;
@@ -94,8 +96,24 @@ function CarouselWrapper(props: CarouselWrapperProps) {
     setCarousel(new Carousel(carouselItems, options));
   }, [photos, props.project.projectId]);
 
-  const setCarouselItem = (index: number) => {
+  const setCarouselItem = async (index: number) => {
+
     if (!carousel) return;
+    //next lines of code are to prevent a bug from happening when you skip exactly 2 images over
+    if (Math.abs(selectedIndex - index) === 2) {
+      if (selectedIndex < index) {
+        for (let x = selectedIndex; x <= index; x++) {
+          await delay(125);
+          next();
+        }
+      }
+      if (selectedIndex > index) {
+        for (let x = selectedIndex; x >= index; x--) {
+          await delay(125);
+          prev();
+        }
+      }
+    }
     carousel.slideTo(index);
     setSelectedIndex(index);
     setScroll(index);
