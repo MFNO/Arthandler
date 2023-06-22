@@ -1,9 +1,14 @@
 import { useState } from "react";
 import "./Login.css";
 import axios from "axios";
-import { Button } from "flowbite-react";
 import { Outlet, Link } from "react-router-dom";
-function Login() {
+
+type LoginProps = {
+  authenticated: boolean;
+  setAuthenticated: (authenticated: boolean) => void;
+};
+
+function Login(props: LoginProps) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
 
@@ -14,12 +19,14 @@ function Login() {
       .then(function (response) {
         console.log(response);
         setLoading(false);
+        props.setAuthenticated(true);
       })
       .catch(function (error) {
         console.log(error);
         setLoading(false);
       });
   };
+
   return (
     <div className="mt-36 w-full h-full flex items-center flex-col">
       <div className="w-[17rem]">

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "./Password.css";
 import axios from "axios";
-import { Button } from "flowbite-react";
 import { Outlet, Link } from "react-router-dom";
 
 function Password() {
