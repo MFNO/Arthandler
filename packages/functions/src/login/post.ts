@@ -40,16 +40,27 @@ export const handler: APIGatewayProxyHandler = async (
   };
   console.log(getParams);
 
-  //generate hash
-  var salt = bcrypt.genSaltSync(10);
-  var hash = bcrypt.hashSync(input.password, salt);
-  console.log("hash", hash);
   //check queried hash
   const results = await dynamoDb.get(getParams).promise();
+
+
+  if (!results.Item) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        StatusCode: 400,
+        Error: "Username does not exist",
+      }),
+    };
+  }
+
   const check = bcrypt.compareSync(input.password, results.Item.password);
-  console.log(check);
+
   return {
     statusCode: 200,
-    body: check,
+    body: JSON.stringify({ isAuthenticated: check }),
   };
 };

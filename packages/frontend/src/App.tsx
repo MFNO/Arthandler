@@ -6,6 +6,7 @@ import Login from "./components/Login/Login";
 import Password from "./components/Password/Password";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Management from "./components/Management/Management";
+import AddProject from "./components/Management/components/AddProject/AddProject";
 
 function App() {
   const [authenticated, setAuthenticated] = React.useState(false);
@@ -29,6 +30,14 @@ function App() {
             element={
               <ProtectedRoute authenticated={authenticated}>
                 <Management />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="add-project"
+            element={
+              <ProtectedRoute authenticated={authenticated}>
+                <AddProject />
               </ProtectedRoute>
             }
           />

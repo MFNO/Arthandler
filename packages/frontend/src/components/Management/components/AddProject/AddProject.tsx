@@ -1,27 +1,19 @@
 import { useState } from "react";
-import "./Login.css";
 import axios from "axios";
-import { Outlet, Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-type LoginProps = {
-  authenticated: boolean;
-  setAuthenticated: (authenticated: boolean) => void;
-};
 
-function Login(props: LoginProps) {
-  const [form, setForm] = useState({ username: "", password: "" });
+function AddProject() {
+  const [form, setForm] = useState({ projectName: "", projectIndex: 5 });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     setLoading(true);
     axios
-      .post(import.meta.env.VITE_APP_USERS_API_URL + "/login", form)
-      .then(function (response) {
-        console.log(response);
+      .post(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects", form)
+      .then(function () {
         setLoading(false);
-        props.setAuthenticated(true);
         navigate("/management");
       })
       .catch(function (error) {
@@ -35,22 +27,12 @@ function Login(props: LoginProps) {
     <div className="mt-36 w-full h-full flex items-center flex-col">
       <div className="w-[17rem]">
         <div className="flex flex-col">
-          <label>Username:</label>
+          <label>Project name:</label>
           <input
             type="text"
-            value={form.username}
+            value={form.projectName}
             onChange={(event) =>
-              setForm({ ...form, username: event.target.value })
-            }
-          />
-        </div>
-        <div className="flex flex-col">
-          <label>Password:</label>
-          <input
-            type="text"
-            value={form.password}
-            onChange={(event) =>
-              setForm({ ...form, password: event.target.value })
+              setForm({ ...form, projectName: event.target.value })
             }
           />
         </div>
@@ -82,21 +64,14 @@ function Login(props: LoginProps) {
                 type="button"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               >
-                Submit
+                Save Project
               </button>
-              <Link
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                to="/password"
-              >
-                Update Password
-              </Link>
             </>
           )}
         </div>
       </div>
-      <Outlet />
     </div>
   );
 }
 
-export default Login;
+export default AddProject;

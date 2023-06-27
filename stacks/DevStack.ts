@@ -40,6 +40,8 @@ export function DevStack({ stack }: StackContext) {
       "GET /projects": "packages/functions/src/projects/get.handler",
       "GET /projects/{projectId}/photos":
         "packages/functions/src/photos/get.handler",
+      "POST /projects":
+        "packages/functions/src/projects/post.handler",
     },
   });
 
