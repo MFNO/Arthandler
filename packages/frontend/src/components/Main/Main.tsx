@@ -1,35 +1,26 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./Main.css";
 import CarouselWrapper from "./components/Carousel/Carousel";
 import Footer from "./components/Footer/Footer";
 import Navigation from "./components/Navigation/Navigation";
 import Title from "./components/Title/Title";
-import axios from "axios";
 import { Project } from "../../types/Project";
 
-function Main() {
-  const [projects, setProjects] = useState<Array<Project>>([]);
+type MainProps = {
+  projects: Array<Project>;
+};
 
-  const [selectedProject, setSelectedProject] = useState<Project>();
+function Main(props: MainProps) {
+  const [selectedProject, setSelectedProject] = useState<Project>(
+    props.projects[0]
+  );
 
-  useEffect(() => {
-    axios
-      .get(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects")
-      .then((response) => {
-        setProjects(response.data);
-        setSelectedProject(response.data[0]);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-  if (!selectedProject || !projects) return <></>;
   return (
     <>
       <Title></Title>
       <Navigation
         selectedProject={selectedProject}
-        projects={projects}
+        projects={props.projects}
         setSelectedProject={setSelectedProject}
       ></Navigation>
       <CarouselWrapper project={selectedProject}></CarouselWrapper>

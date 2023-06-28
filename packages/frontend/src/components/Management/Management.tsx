@@ -4,30 +4,31 @@ import { Project } from "../../types/Project";
 import axios from "axios";
 import { Outlet, Link } from "react-router-dom";
 
-function Management() {
-  const [projects, setProjects] = useState<Array<Project>>([]);
+type ManageProps = {
+  projects: Array<Project>;
+};
 
-  useEffect(() => {
-    axios
-      .get(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects")
-      .then((response) => {
-        setProjects(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
+function Management(props: ManageProps) {
   return (
     <div className="mt-36 w-full h-full flex items-center flex-col">
       <div className="w-[17rem]">
         <div className="flex flex-col">
-
-          <label htmlFor="projects" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select a project</label>
-          <select id="projects" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            {projects.map((project, index) => {
-              return (<option key={index} value={project.projectId}>{project.projectName}</option>
-              )
+          <label
+            htmlFor="projects"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Select a project
+          </label>
+          <select
+            id="projects"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            {props.projects.map((project, index) => {
+              return (
+                <option key={index} value={project.projectId}>
+                  {project.projectName}
+                </option>
+              );
             })}
           </select>
           <Link
@@ -36,11 +37,9 @@ function Management() {
           >
             Add project
           </Link>
-
         </div>
       </div>
       <Outlet />
-
     </div>
   );
 }

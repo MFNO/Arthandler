@@ -127,6 +127,8 @@ function CarouselWrapper(props: CarouselWrapperProps) {
     setScroll(index);
   };
 
+  if (!photos) return <></>;
+
   if (loading)
     return (
       <div role="status">
