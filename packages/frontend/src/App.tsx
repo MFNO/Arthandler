@@ -31,17 +31,14 @@ function App() {
       });
   }, []);
 
-  const swapItemsAtIndexes = (indexOne: number, indexTwo: number) => {
-    console.log("index one", indexOne);
-    console.log("index two", indexTwo);
-    console.log(projects);
-
+  const swapItemsAtIndexes = (
+    projectIndexOne: number,
+    projectIndexTwo: number
+  ) => {
     const newProjects = [...projects];
-    [newProjects[indexOne], newProjects[indexTwo]] = [
-      newProjects[indexTwo],
-      newProjects[indexOne],
-    ];
-    console.log(newProjects);
+    newProjects[projectIndexOne].projectIndex = projectIndexTwo;
+    newProjects[projectIndexTwo].projectIndex = projectIndexOne;
+    newProjects.sort((a, b) => a.projectIndex - b.projectIndex);
     setProjects(newProjects);
   };
 
