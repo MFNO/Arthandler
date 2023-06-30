@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import Management from "./components/Management/Management";
 import ManageProjects from "./components/Management/components/ManageProjects/ManageProjects";
 import axios from "axios";
+import { Project } from "./types/Project";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -17,7 +18,9 @@ function App() {
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects")
+      .get<Array<Project>>(
+        import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects"
+      )
       .then((response) => {
         const sortedProjects = response.data.sort(
           (a, b) => a.projectIndex - b.projectIndex

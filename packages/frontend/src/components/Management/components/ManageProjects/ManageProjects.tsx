@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ManageProject from "./ManageProject";
+import { Project } from "../../../../types/Project";
 
-type ManageProjectsProps = {};
-
-function ManageProjects(props: ManageProjectsProps) {
-  const [form, setForm] = useState({ projectName: "", projectIndex: 5 });
+function ManageProjects() {
   const [loading, setLoading] = useState(false);
 
   const [updatedProjects, setUpdatedProjects] = useState<Array<Project>>([]);
+
+  const [form, setForm] = useState({
+    projectName: "",
+    projectIndex: 0,
+  });
 
   const swapItemsAtIndexes = (
     projectIndexOne: number,
@@ -23,7 +26,9 @@ function ManageProjects(props: ManageProjectsProps) {
 
   function getProjects() {
     axios
-      .get(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects")
+      .get<Array<Project>>(
+        import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects"
+      )
       .then((response) => {
         const sortedProjects = response.data.sort(
           (a, b) => a.projectIndex - b.projectIndex
@@ -35,10 +40,27 @@ function ManageProjects(props: ManageProjectsProps) {
       });
   }
 
-  const handleSubmit = () => {
+  const addProject = () => {
     setLoading(true);
     axios
-      .post(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects", form)
+      .post(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects", [form])
+      .then(function () {
+        setLoading(false);
+        getProjects();
+      })
+      .catch(function (error) {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+  const updateProjects = () => {
+    setLoading(true);
+    axios
+      .put(
+        import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects",
+        updatedProjects
+      )
       .then(function () {
         setLoading(false);
         getProjects();
@@ -58,7 +80,7 @@ function ManageProjects(props: ManageProjectsProps) {
   return (
     <>
       <div className="w-full flex-col flex items-center gap-4 mt-16">
-        <h1>Manage Projects</h1>
+        <h1>Manage Project Order</h1>
         <div className="flex flex-row gap-4 justify-center flex-wrap bg-slate-200 w-3/4 ">
           {updatedProjects.map((item, index) => (
             <ManageProject
@@ -70,8 +92,15 @@ function ManageProjects(props: ManageProjectsProps) {
             />
           ))}
         </div>
+        <button
+          onClick={updateProjects}
+          type="button"
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
+          Save order
+        </button>
       </div>
-      <div className="mt-36 w-full h-full flex items-center flex-col">
+      <div className="mt-16 w-full h-full flex items-center flex-col">
         <div className="w-[17rem]">
           <div className="flex flex-col">
             <label>Project name:</label>
@@ -79,11 +108,15 @@ function ManageProjects(props: ManageProjectsProps) {
               type="text"
               value={form.projectName}
               onChange={(event) =>
-                setForm({ ...form, projectName: event.target.value })
+                setForm({
+                  ...form,
+                  projectName: event.target.value,
+                  projectIndex: updatedProjects.length,
+                })
               }
             />
           </div>
-          <div className="flex mt-4 flex-row-reverse">
+          <div className="flex mt-2 justify-center">
             {loading ? (
               <div role="status">
                 <svg
@@ -107,7 +140,7 @@ function ManageProjects(props: ManageProjectsProps) {
             ) : (
               <>
                 <button
-                  onClick={handleSubmit}
+                  onClick={addProject}
                   type="button"
                   className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >

@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
 import "./Management.css";
 import { Project } from "../../types/Project";
-import axios from "axios";
 import { Outlet, Link } from "react-router-dom";
 
 type ManageProps = {
