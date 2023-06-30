@@ -1,17 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import ManageProject from "./ManageProject";
 
-type ManageProjectsProps = {
-  projects: Array<Project>;
-  swapProjects: (indexOne: number, indexTwo: number) => void;
-};
+type ManageProjectsProps = {};
 
 function ManageProjects(props: ManageProjectsProps) {
   const [form, setForm] = useState({ projectName: "", projectIndex: 5 });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
+  const [updatedProjects, setUpdatedProjects] = useState<Array<Project>>([]);
+
+  const swapItemsAtIndexes = (
+    projectIndexOne: number,
+    projectIndexTwo: number
+  ) => {
+    const newProjects = [...updatedProjects];
+    newProjects[projectIndexOne].projectIndex = projectIndexTwo;
+    newProjects[projectIndexTwo].projectIndex = projectIndexOne;
+    newProjects.sort((a, b) => a.projectIndex - b.projectIndex);
+    setUpdatedProjects(newProjects);
+  };
+
+  function getProjects() {
+    axios
+      .get(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects")
+      .then((response) => {
+        const sortedProjects = response.data.sort(
+          (a, b) => a.projectIndex - b.projectIndex
+        );
+        setUpdatedProjects(sortedProjects);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   const handleSubmit = () => {
     setLoading(true);
@@ -19,7 +41,7 @@ function ManageProjects(props: ManageProjectsProps) {
       .post(import.meta.env.VITE_APP_PROJECTS_API_URL + "/projects", form)
       .then(function () {
         setLoading(false);
-        navigate("/management");
+        getProjects();
       })
       .catch(function (error) {
         console.log(error);
@@ -27,16 +49,22 @@ function ManageProjects(props: ManageProjectsProps) {
       });
   };
 
-  if (!props.projects) return <></>;
+  useEffect(() => {
+    getProjects();
+  }, []);
+
+  if (!updatedProjects) return <></>;
 
   return (
     <>
       <div className="w-full flex-col flex items-center gap-4 mt-16">
         <h1>Manage Projects</h1>
-        <div className="flex flex-row gap-4 justify-center flex-rap bg-slate-200 w-3/4 ">
-          {props.projects.map((item, index) => (
+        <div className="flex flex-row gap-4 justify-center flex-wrap bg-slate-200 w-3/4 ">
+          {updatedProjects.map((item, index) => (
             <ManageProject
-              swapProjects={props.swapProjects}
+              swapProjects={swapItemsAtIndexes}
+              isLastItem={index === updatedProjects.length - 1}
+              isFirstItem={index === 0}
               key={item.projectId}
               project={item}
             />
@@ -83,7 +111,7 @@ function ManageProjects(props: ManageProjectsProps) {
                   type="button"
                   className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
-                  Save Project
+                  Add Project
                 </button>
               </>
             )}

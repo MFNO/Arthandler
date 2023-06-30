@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 type ManageProjectProps = {
   project: Project;
   swapProjects: (indexOne: number, indexTwo: number) => void;
+  isLastItem: boolean;
+  isFirstItem: boolean;
 };
 
 function ManageProject(props: ManageProjectProps) {
   return (
     <div className="flex flex-row">
-      {props.project.projectIndex > 0 && (
+      {!props.isFirstItem && (
         <div
           onClick={() =>
             props.swapProjects(
@@ -22,16 +24,18 @@ function ManageProject(props: ManageProjectProps) {
         </div>
       )}
       <div>{props.project.projectName}</div>
-      <div
-        onClick={() =>
-          props.swapProjects(
-            props.project.projectIndex,
-            props.project.projectIndex + 1
-          )
-        }
-      >
-        {">"}
-      </div>
+      {!props.isLastItem && (
+        <div
+          onClick={() =>
+            props.swapProjects(
+              props.project.projectIndex,
+              props.project.projectIndex + 1
+            )
+          }
+        >
+          {">"}
+        </div>
+      )}
     </div>
   );
 }

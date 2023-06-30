@@ -31,17 +31,6 @@ function App() {
       });
   }, []);
 
-  const swapItemsAtIndexes = (
-    projectIndexOne: number,
-    projectIndexTwo: number
-  ) => {
-    const newProjects = [...projects];
-    newProjects[projectIndexOne].projectIndex = projectIndexTwo;
-    newProjects[projectIndexTwo].projectIndex = projectIndexOne;
-    newProjects.sort((a, b) => a.projectIndex - b.projectIndex);
-    setProjects(newProjects);
-  };
-
   if (loading)
     return (
       <div role="status">
@@ -93,10 +82,7 @@ function App() {
             path="add-project"
             element={
               <ProtectedRoute authenticated={authenticated}>
-                <ManageProjects
-                  swapProjects={swapItemsAtIndexes}
-                  projects={projects}
-                />
+                <ManageProjects />
               </ProtectedRoute>
             }
           />
