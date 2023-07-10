@@ -63,13 +63,13 @@ export function DevStack({ stack }: StackContext) {
       bucket: {
         blockPublicAccess: {
           blockPublicAcls: true,
-          blockPublicPolicy: true,
+          blockPublicPolicy: false,
           restrictPublicBuckets: false,
           ignorePublicAcls: true,
         },
       },
     },
-    name: "arthandler-photos",
+    name: stack.stage + "-arthandler-photos",
     cors: [
       {
         allowedMethods: ["GET"],
@@ -81,7 +81,7 @@ export function DevStack({ stack }: StackContext) {
   //Attach permissions to bucket
   const permissions = new PolicyStatement({
     principals: [new AnyPrincipal()],
-    actions: ["s3:GetObject"],
+    actions: ["s3:GetObject", "s3:PutObject"],
     effect: Effect.ALLOW,
     resources: [photoBucket.bucketArn + "/*"],
     conditions: {

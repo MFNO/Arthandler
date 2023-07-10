@@ -20,29 +20,39 @@ export const handler: APIGatewayProxyHandler = async (
   }
 
   const input: Input = JSON.parse(event.body);
-  console.log(input);
-
-  if (!input || !input.projectName || !input.projectIndex) {
+  if (!input.length > 0) {
     return {
       statusCode: 400,
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
+      body: JSON.stringify({ StatusCode: 400, Error: "no project to update" }),
     };
   }
+  for (const project of input) {
+    if (!project || !project.projectName || project.projectIndex < 0) {
+      return {
+        statusCode: 400,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
+      };
+    }
 
-  console.log(input);
+    console.log(project);
 
-  const putParams: DocumentClient.PutItemInput = {
-    TableName: Table.ProjectPhotos.tableName,
-    Item: {
-      projectId: uuidv4(),
-      projectName: input.projectName,
-      projectIndex: input.projectIndex,
-    },
-  };
-  await dynamoDb.put(putParams).promise();
+    const updateParams: DocumentClient.UpdateItemInput = {
+      TableName: Table.ProjectPhotos.tableName,
+      Key: { projectId: project.projectId },
+      UpdateExpression: "set projectName = :pn, projectIndex = :pi",
+      ExpressionAttributeValues: {
+        ":pn": project.projectName,
+        ":pi": project.projectIndex,
+      },
+    };
+    await dynamoDb.update(updateParams).promise();
+  }
 
   return {
     statusCode: 200,
