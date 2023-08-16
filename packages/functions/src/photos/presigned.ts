@@ -37,11 +37,15 @@ export async function handler(
   console.log("Event is", JSON.stringify(event, null, 2));
   try {
     const number = input.number;
-    const fileType = "image/png";
-    const filePath = generateId();
     const urls = [];
+    const s3 = new S3();
     for (let x = 0; x < number; x++) {
-      const presignedPost = await createPresignedPost({ fileType, filePath });
+      const presignedPost = s3.getSignedUrl("putObject", {
+        Bucket: process.env.BUCKET_NAME,
+        Key: "test.jpg", //filename
+        Expires: 100, //time to expire in seconds
+        ContentType: "image/jpg",
+      });
       urls.push(presignedPost);
     }
     return {
@@ -64,46 +68,4 @@ export async function handler(
       body: JSON.stringify({ error: JSON.stringify(error) }),
     };
   }
-}
-
-type GetPresignedPostUrlParams = {
-  fileType: string;
-  filePath: string;
-};
-
-function createPresignedPost({
-  fileType,
-  filePath,
-}: GetPresignedPostUrlParams): Promise<S3.PresignedPost> {
-  const params = {
-    Bucket: process.env.BUCKET_NAME,
-    Fields: { key: filePath, acl: "public-read" },
-    Conditions: [
-      // content length restrictions: 0-1MB]
-      ["content-length-range", 0, 1000000],
-      // specify content-type to be more generic- images only
-      // ['starts-with', '$Content-Type', 'image/'],
-      ["eq", "$Content-Type", fileType],
-    ],
-    // number of seconds for which the presigned policy should be valid
-    Expires: 30,
-  };
-
-  const s3 = new S3();
-  return s3.createPresignedPost(params) as unknown as Promise<S3.PresignedPost>;
-}
-
-function generateId() {
-  let result = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!-.*()";
-  const length = 10;
-
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i += 1) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-
-  const date = new Date().toISOString().split("T")[0].replace(/-/g, "");
-  return `${date}_${result}`;
 }
