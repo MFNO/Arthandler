@@ -83,6 +83,7 @@ function CarouselWrapper(props: CarouselWrapperProps) {
 
   useEffect(() => {
     setSelectedIndex(0);
+    if (!photos) return;
     if (photos.length <= 0) return;
     let carouselItems = photos.flatMap<CarouselItem>((image, index) => {
       const element = document.getElementById(`carousel-item-${index}`);

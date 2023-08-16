@@ -1,6 +1,7 @@
 import "./Management.css";
 import { Project } from "../../types/Project";
 import { Outlet, Link } from "react-router-dom";
+import ManagePhotos from "./components/ManagePhotos/ManagePhotos";
 
 type ManageProps = {
   projects: Array<Project>;
@@ -35,6 +36,9 @@ function Management(props: ManageProps) {
           >
             Add project
           </Link>
+        </div>
+        <div className="flex flex-col">
+          <ManagePhotos></ManagePhotos>
         </div>
       </div>
       <Outlet />

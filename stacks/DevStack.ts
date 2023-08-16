@@ -1,7 +1,35 @@
 import { PolicyStatement, Effect, AnyPrincipal } from "aws-cdk-lib/aws-iam";
-import { Api, StaticSite, StackContext, Table, Bucket } from "sst/constructs";
+import {
+  Api,
+  StaticSite,
+  StackContext,
+  Table,
+  Bucket,
+  Function,
+} from "sst/constructs";
 
 export function DevStack({ stack }: StackContext) {
+  //Create bucket to host photos
+  const photoBucket = new Bucket(stack, "Photos", {
+    cdk: {
+      bucket: {
+        blockPublicAccess: {
+          blockPublicAcls: true,
+          blockPublicPolicy: false,
+          restrictPublicBuckets: false,
+          ignorePublicAcls: true,
+        },
+      },
+    },
+    name: stack.stage + "-arthandler-photos",
+    cors: [
+      {
+        allowedMethods: ["GET", "POST", "PUT"],
+        allowedOrigins: ["http://localhost:5173/"],
+      },
+    ],
+  });
+
   // Create the table
   const projectsTable = new Table(stack, "ProjectPhotos", {
     cdk: {
@@ -42,6 +70,21 @@ export function DevStack({ stack }: StackContext) {
         "packages/functions/src/photos/get.handler",
       "POST /projects": "packages/functions/src/projects/post.handler",
       "PUT /projects": "packages/functions/src/projects/put.handler",
+      "POST /projects/presigned": {
+        function: {
+          runtime: "nodejs16.x",
+          memorySize: 1024,
+          timeout: "25 seconds",
+          handler: "packages/functions/src/photos/presigned.handler",
+          environment: { BUCKET_NAME: photoBucket.bucketName },
+          permissions: [photoBucket],
+        },
+      },
+    },
+    cors: {
+      allowedMethods: ["GET", "PUT", "OPTIONS", "POST", "PATCH"],
+      allowedOrigins: ["http://localhost:5173/"],
+      allowHeaders: ["*"],
     },
   });
 
@@ -55,27 +98,11 @@ export function DevStack({ stack }: StackContext) {
       "POST /login": "packages/functions/src/login/post.handler",
       "POST /password": "packages/functions/src/password/post.handler",
     },
-  });
-
-  //Create bucket to host photos
-  const photoBucket = new Bucket(stack, "Photos", {
-    cdk: {
-      bucket: {
-        blockPublicAccess: {
-          blockPublicAcls: true,
-          blockPublicPolicy: false,
-          restrictPublicBuckets: false,
-          ignorePublicAcls: true,
-        },
-      },
+    cors: {
+      allowedMethods: ["GET", "PUT", "OPTIONS", "POST", "PATCH"],
+      allowedOrigins: ["http://localhost:5173/"],
+      allowHeaders: ["*"],
     },
-    name: stack.stage + "-arthandler-photos",
-    cors: [
-      {
-        allowedMethods: ["GET"],
-        allowedOrigins: ["http://localhost:5173/"],
-      },
-    ],
   });
 
   //Attach permissions to bucket
