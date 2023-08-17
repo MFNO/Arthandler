@@ -3,6 +3,8 @@ import type {
   APIGatewayProxyResultV2,
 } from "aws-lambda";
 import { S3 } from "aws-sdk";
+import { v4 as uuidv4 } from "uuid";
+
 if (!process.env.BUCKET_NAME)
   throw new Error("Environment variable Bucket name is required.");
 
@@ -24,7 +26,7 @@ export async function handler(
 
   const input: Input = JSON.parse(event.body);
 
-  if (!input || !input.number) {
+  if (!input || !input.number || !input.projectId) {
     return {
       statusCode: 400,
       headers: {
@@ -42,9 +44,9 @@ export async function handler(
     for (let x = 0; x < number; x++) {
       const presignedPost = s3.getSignedUrl("putObject", {
         Bucket: process.env.BUCKET_NAME,
-        Key: "test.jpg", //filename
+        Key: uuidv4(), //filename
         Expires: 100, //time to expire in seconds
-        ContentType: "image/jpg",
+        ContentType: "image/*",
       });
       urls.push(presignedPost);
     }

@@ -4,7 +4,11 @@ import ManagePhoto from "./ManagePhoto";
 import { Project } from "../../../../types/Project";
 import AWS from "aws-sdk";
 
-function ManagePhotos() {
+type ManagePhotosProps = {
+  selectedProjectId: string;
+};
+
+function ManagePhotos(props: ManagePhotosProps) {
   const [loading, setLoading] = useState(false);
   const imageInput = createRef();
 
@@ -13,6 +17,7 @@ function ManagePhotos() {
 
       .post(`${import.meta.env.VITE_APP_PROJECTS_API_URL}/projects/presigned`, {
         number: imageInput.current.files.length,
+        projectId: props.selectedProjectId,
       })
       .then((response) => {
         postToS3(response.data.urls);
@@ -25,7 +30,7 @@ function ManagePhotos() {
 
   const postToS3 = (urls: string[]) => {
     var options = {
-      headers: { "Content-Type": "image/jpg" },
+      headers: { "Content-Type": "image/*" },
     };
     for (let x = 0; x < urls.length; x++) {
       console.log(imageInput.current.files);
