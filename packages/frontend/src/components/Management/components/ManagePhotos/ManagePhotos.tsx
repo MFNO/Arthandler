@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import { projectsApi } from "../../../../api";
+import { UPLOAD_CONTENT_TYPE, compressImage } from "../../../../image";
 import type { Photo } from "../../../../types/Photo";
 
 type ManagePhotosProps = {
@@ -67,14 +68,16 @@ function ManagePhotos({ selectedProjectId }: ManagePhotosProps) {
     if (!selectedProjectId) return;
 
     try {
+      const compressed = await compressImage(file as File);
+
       const { data } = await projectsApi.post<{ url: string; key: string }>(
         "/projects/presigned",
         { projectId: selectedProjectId },
       );
 
       // Bare axios: the presigned URL carries its own auth in the query string.
-      await axios.put(data.url, file, {
-        headers: { "Content-Type": "image/*" },
+      await axios.put(data.url, compressed, {
+        headers: { "Content-Type": UPLOAD_CONTENT_TYPE },
       });
 
       const { data: added } = await projectsApi.post<{ url: string }>(

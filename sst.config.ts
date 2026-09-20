@@ -148,6 +148,19 @@ export default $config({
         command: "npm run build",
         output: "dist",
       },
+      // www is canonical; the apex 301s to it. Gated because attaching the
+      // domain requires the nameservers to already point at the Route 53 zone
+      // below — ACM validation hangs otherwise. Until then production deploys
+      // without a custom domain so content can be loaded in ahead of cutover.
+      //   DOMAIN_READY=1 npm run deploy -- --stage production
+      domain:
+        $app.stage === "production" && process.env.DOMAIN_READY === "1"
+          ? {
+              name: "www.zacharydeguzman.com",
+              redirects: ["zacharydeguzman.com"],
+              dns: sst.aws.dns({ zone: "Z0924895NBRLAL77CYMF" }),
+            }
+          : undefined,
       environment: {
         VITE_APP_PROJECTS_API_URL: projectsApi.url,
         VITE_APP_USERS_API_URL: usersApi.url,
