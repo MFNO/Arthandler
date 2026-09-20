@@ -1,6 +1,7 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import bcrypt from "bcryptjs";
 import { Resource } from "sst";
+import { signToken } from "../auth/jwt";
 import { dynamo } from "../dynamo";
 import { badRequest, json } from "../response";
 
@@ -21,12 +22,18 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     Key: { username: input.username },
   });
 
-  if (!results.Item) return badRequest("Username does not exist");
+  const hash = results.Item?.password;
 
+  // Always run a comparison so a missing user and a wrong password take the
+  // same time and return the same response.
   const isAuthenticated = await bcrypt.compare(
     input.password,
-    results.Item.password,
+    hash ?? "$2a$10$invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidin",
   );
 
-  return json(200, { isAuthenticated });
+  if (!hash || !isAuthenticated) {
+    return json(401, { error: "Incorrect username or password" });
+  }
+
+  return json(200, { token: await signToken(input.username) });
 };

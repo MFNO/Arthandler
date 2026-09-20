@@ -6,7 +6,6 @@ import { badRequest, json } from "../response";
 type ProjectUpdate = {
   projectId: string;
   projectName: string;
-  projectIndex: number;
 };
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -18,21 +17,24 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     return badRequest("no project to update");
   }
 
-  const invalid = input.some(
-    (project) =>
-      !project?.projectId || !project.projectName || project.projectIndex < 0,
-  );
-  if (invalid) return badRequest("invalid parameters");
+  if (input.some((project) => !project?.projectId || !project.projectName)) {
+    return badRequest("invalid parameters");
+  }
 
+  const ids = new Set(input.map((project) => project.projectId));
+  if (ids.size !== input.length) return badRequest("duplicate projectId");
+
+  // Order is taken from the array, so indexes are always unique and sequential.
   await Promise.all(
-    input.map((project) =>
+    input.map((project, projectIndex) =>
       dynamo.update({
         TableName: Resource.ProjectPhotos.name,
         Key: { projectId: project.projectId },
         UpdateExpression: "set projectName = :pn, projectIndex = :pi",
+        ConditionExpression: "attribute_exists(projectId)",
         ExpressionAttributeValues: {
           ":pn": project.projectName,
-          ":pi": project.projectIndex,
+          ":pi": projectIndex,
         },
       }),
     ),

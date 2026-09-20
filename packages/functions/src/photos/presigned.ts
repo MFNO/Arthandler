@@ -8,7 +8,6 @@ import { badRequest, json } from "../response";
 const s3 = new S3Client({});
 
 type PresignRequest = {
-  number: number;
   projectId: string;
 };
 
@@ -17,28 +16,19 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
   const input = JSON.parse(event.body) as PresignRequest;
 
-  if (!input.number || !input.projectId) return badRequest("invalid parameters");
+  if (!input.projectId) return badRequest("projectId is required");
 
-  try {
-    const urls = await Promise.all(
-      Array.from({ length: input.number }, () =>
-        getSignedUrl(
-          s3,
-          new PutObjectCommand({
-            Bucket: Resource.Photos.name,
-            Key: randomUUID(),
-            ContentType: "image/*",
-          }),
-          { expiresIn: 100 },
-        ),
-      ),
-    );
+  const key = `${input.projectId}/${randomUUID()}`;
 
-    return json(200, { urls });
-  } catch (error: unknown) {
-    console.error("Failed to presign upload urls", error);
-    return badRequest(
-      error instanceof Error ? error.message : "could not presign urls",
-    );
-  }
+  const url = await getSignedUrl(
+    s3,
+    new PutObjectCommand({
+      Bucket: Resource.Photos.name,
+      Key: key,
+      ContentType: "image/*",
+    }),
+    { expiresIn: 300 },
+  );
+
+  return json(200, { url, key });
 };
