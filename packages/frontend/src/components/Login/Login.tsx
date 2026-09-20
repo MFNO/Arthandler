@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { App, Button, Card, Flex, Form, Input } from "antd";
 import { usersApi } from "../../api";
+import { setToken } from "../../auth";
 
 type LoginProps = {
   setAuthenticated: (authenticated: boolean) => void;
@@ -20,16 +21,13 @@ function Login({ setAuthenticated }: LoginProps) {
   const onFinish = (values: Credentials) => {
     setLoading(true);
     usersApi
-      .post<{ isAuthenticated: boolean }>("/login", values)
+      .post<{ token: string }>("/login", values)
       .then(({ data }) => {
-        if (!data.isAuthenticated) {
-          message.error("Incorrect username or password");
-          return;
-        }
+        setToken(data.token);
         setAuthenticated(true);
         navigate("/management");
       })
-      .catch(() => message.error("Could not sign in"))
+      .catch(() => message.error("Incorrect username or password"))
       .finally(() => setLoading(false));
   };
 

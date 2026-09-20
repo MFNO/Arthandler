@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Card, Flex, Select } from "antd";
+import { Card, Flex, Select } from "antd";
 import ManagePhotos from "./components/ManagePhotos/ManagePhotos";
 import type { Project } from "../../types/Project";
 
@@ -14,8 +13,8 @@ function Management({ projects }: ManagementProps) {
   >(projects[0]?.projectId);
 
   return (
-    <Flex justify="center" style={{ marginTop: "9rem" }}>
-      <Card title="Manage" style={{ width: 320 }}>
+    <Flex justify="center" style={{ marginTop: "2rem" }}>
+      <Card title="Photos" style={{ width: 560 }}>
         <Flex vertical gap={16}>
           <Select
             value={selectedProjectId}
@@ -26,10 +25,10 @@ function Management({ projects }: ManagementProps) {
               label: project.projectName,
             }))}
           />
-          <ManagePhotos selectedProjectId={selectedProjectId} />
-          <Link to="/add-project">
-            <Button block>Manage projects</Button>
-          </Link>
+          <ManagePhotos
+            key={selectedProjectId}
+            selectedProjectId={selectedProjectId}
+          />
         </Flex>
       </Card>
     </Flex>

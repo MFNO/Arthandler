@@ -16,6 +16,10 @@ export default $config({
     };
   },
   async run() {
+    // Placeholder lets non-production stages deploy without a manual secret set.
+    // Set a real one with: npx sst secret set JwtSecret "$(openssl rand -hex 32)"
+    const jwtSecret = new sst.Secret("JwtSecret", "local-dev-secret-change-me");
+
     const photos = new sst.aws.Bucket("Photos", {
       access: "public",
       cors: {
@@ -44,30 +48,62 @@ export default $config({
       },
     });
 
+    const authorizer = projectsApi.addAuthorizer({
+      name: "jwt",
+      lambda: {
+        function: {
+          handler: "packages/functions/src/auth/authorizer.handler",
+          link: [jwtSecret],
+        },
+        response: "simple",
+      },
+    });
+
+    const auth = { lambda: authorizer.id };
+
+    // Public — the gallery is world readable.
     projectsApi.route(
       "GET /projects",
       "packages/functions/src/projects/get.handler",
     );
     projectsApi.route(
+      "GET /projects/{projectId}/photos",
+      "packages/functions/src/photos/get.handler",
+    );
+
+    // Authenticated — management only.
+    projectsApi.route(
       "POST /projects",
       "packages/functions/src/projects/post.handler",
+      { auth },
     );
     projectsApi.route(
       "PUT /projects",
       "packages/functions/src/projects/put.handler",
+      { auth },
     );
     projectsApi.route(
-      "GET /projects/{projectId}/photos",
-      "packages/functions/src/photos/get.handler",
+      "POST /projects/{projectId}/photos",
+      "packages/functions/src/photos/post.handler",
+      { auth },
     );
-    projectsApi.route("POST /projects/presigned", {
-      handler: "packages/functions/src/photos/presigned.handler",
-      memory: "1024 MB",
-      timeout: "25 seconds",
-    });
+    projectsApi.route(
+      "PUT /projects/{projectId}/photos",
+      "packages/functions/src/photos/put.handler",
+      { auth },
+    );
+    projectsApi.route(
+      "POST /projects/presigned",
+      {
+        handler: "packages/functions/src/photos/presigned.handler",
+        memory: "1024 MB",
+        timeout: "25 seconds",
+      },
+      { auth },
+    );
 
     const usersApi = new sst.aws.ApiGatewayV2("UsersApi", {
-      link: [users],
+      link: [users, jwtSecret],
       cors: {
         allowMethods: ["GET", "PUT", "POST", "PATCH"],
         allowOrigins: ["*"],

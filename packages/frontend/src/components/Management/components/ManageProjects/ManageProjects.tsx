@@ -16,7 +16,11 @@ function ManageProjects() {
       .get<Project[]>("/projects")
       .then((response) => {
         setProjects(
-          [...response.data].sort((a, b) => a.projectIndex - b.projectIndex),
+          [...response.data].sort(
+            (a, b) =>
+              a.projectIndex - b.projectIndex ||
+              a.projectName.localeCompare(b.projectName),
+          ),
         );
       })
       .catch(() => message.error("Could not load projects"))
@@ -38,7 +42,7 @@ function ManageProjects() {
   const addProject = ({ projectName }: { projectName: string }) => {
     setSaving(true);
     projectsApi
-      .post("/projects", { projectName, projectIndex: projects.length })
+      .post("/projects", { projectName })
       .then(() => {
         form.resetFields();
         getProjects();

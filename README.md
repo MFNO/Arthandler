@@ -7,7 +7,7 @@ The public facing website itself is fairly simple, it's a static React app displ
 ### Management Portal
 The interesting feature is the management portal.
 
-The photographer is able to log-in using OAuth and dynamically add:
+The photographer logs in with a username and password, and can dynamically add:
 1. New projects
 2. Photos to that project
 3. The order of the photos
@@ -29,9 +29,22 @@ Images are stored in S3 and uploaded directly from the browser using presigned U
 Handlers reach linked resources through SST's `Resource` object rather than environment
 variables — `Resource.Users.name`, `Resource.Photos.name`, and so on.
 ## Authentication
-This app is designed to only be used by one person (for now).
+This app is designed to only be used by one person (for now), so there is no signup flow —
+users are seeded directly into DynamoDB.
 
-So the app is built on a simple login-only system.
+Passwords are stored as bcrypt hashes. `POST /login` returns a JWT (HS256, 12 hour expiry)
+which the frontend keeps in `sessionStorage` and sends as a `Bearer` token.
+
+The write routes (`POST`/`PUT /projects`, `/projects/presigned`, `POST /projects/{id}/photos`)
+are protected by an API Gateway Lambda authorizer, so they are rejected at the gateway before
+a handler runs. The read routes are public — it's a public gallery.
+
+The JWT signing key is an `sst.Secret` with a placeholder so stages deploy without setup.
+**Set a real one before exposing a stage publicly:**
+
+```bash
+npx sst secret set JwtSecret "$(openssl rand -hex 32)" --stage <stage>
+```
 
 # Running it
 
@@ -64,6 +77,31 @@ Deployed URLs for a stage are written to `.sst/outputs.json`.
 `Resource` types used by the Lambda handlers are generated into `sst-env.d.ts` by `sst dev` or
 `sst deploy`. Before the first deploy `npm run typecheck` reports unknown properties on
 `Resource` in `packages/functions` — `sst diff` alone generates the file but leaves it empty.
+
+## Creating a user
+
+There's no signup flow, so the first user has to be written straight into the Users table.
+Find the table name for the stage you're targeting:
+
+```bash
+aws dynamodb list-tables --profile ArtHandlerDev --region us-east-1
+# arthandler-<stage>-UsersTable-xxxxxxxx
+```
+
+Generate a bcrypt hash and insert the row (run from `packages/functions` so `bcryptjs`
+resolves):
+
+```bash
+cd packages/functions
+HASH=$(node -e 'import("bcryptjs").then(b=>process.stdout.write(b.default.hashSync("YOUR_PASSWORD",10)))')
+aws dynamodb put-item --profile ArtHandlerDev --region us-east-1 \
+  --table-name arthandler-<stage>-UsersTable-xxxxxxxx \
+  --item "{\"username\":{\"S\":\"YOUR_USERNAME\"},\"password\":{\"S\":\"$HASH\"}}"
+```
+
+Each stage has its own Users table, so a user seeded into your personal stage won't exist in
+`dev`. Once a user exists, passwords can be changed through the app at `/password`, which
+requires the current password.
 
 ## References
 https://sst.dev/docs/component/aws/static-site/
