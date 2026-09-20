@@ -1,51 +1,38 @@
-import "./Management.css";
-import { Project } from "../../types/Project";
-import { Outlet, Link } from "react-router-dom";
-import ManagePhotos from "./components/ManagePhotos/ManagePhotos";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button, Card, Flex, Select } from "antd";
+import ManagePhotos from "./components/ManagePhotos/ManagePhotos";
+import type { Project } from "../../types/Project";
 
-type ManageProps = {
-  projects: Array<Project>;
+type ManagementProps = {
+  projects: Project[];
 };
 
-function Management(props: ManageProps) {
-  const [selectedProjectId, setSelectedProjectId] = useState<Project>(0);
+function Management({ projects }: ManagementProps) {
+  const [selectedProjectId, setSelectedProjectId] = useState<
+    string | undefined
+  >(projects[0]?.projectId);
+
   return (
-    <div className="mt-36 w-full h-full flex items-center flex-col">
-      <div className="w-[17rem]">
-        <div className="flex flex-col">
-          <label
-            htmlFor="projects"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Select a project
-          </label>
-          <select
-            id="projects"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            onChange={(proj) => setSelectedProjectId(proj.target.value)}
-          >
-            {props.projects.map((project, index) => {
-              return (
-                <option key={index} value={project.projectId}>
-                  {project.projectName}
-                </option>
-              );
-            })}
-          </select>
-          <Link
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            to="/add-project"
-          >
-            Add project
+    <Flex justify="center" style={{ marginTop: "9rem" }}>
+      <Card title="Manage" style={{ width: 320 }}>
+        <Flex vertical gap={16}>
+          <Select
+            value={selectedProjectId}
+            onChange={setSelectedProjectId}
+            placeholder="Select a project"
+            options={projects.map((project) => ({
+              value: project.projectId,
+              label: project.projectName,
+            }))}
+          />
+          <ManagePhotos selectedProjectId={selectedProjectId} />
+          <Link to="/add-project">
+            <Button block>Manage projects</Button>
           </Link>
-        </div>
-        <div className="flex flex-col">
-          <ManagePhotos selectedProjectId={selectedProjectId}></ManagePhotos>
-        </div>
-      </div>
-      <Outlet />
-    </div>
+        </Flex>
+      </Card>
+    </Flex>
   );
 }
 

@@ -1,20 +1,23 @@
-.noscroll {
-    -ms-overflow-style: none;
-    /* Internet Explorer 10+ */
-    scrollbar-width: none;
-    /* Firefox */
-    overflow: -moz-scrollbars-none;
+.thumbnail-strip {
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.noscroll::-webkit-scrollbar {
-    display: none;
-    /* Safari and Chrome */
+.thumbnail-strip::-webkit-scrollbar {
+  display: none;
 }
 
-.carousel {
-    background-color: #f7f7f7;
+.thumbnail-strip img {
+  display: inline-block;
+  height: 6rem;
+  margin: 0 4px;
+  cursor: pointer;
 }
 
-#scroll-container img:first-child {
-    margin-left: 13vw;
-  }
+.thumbnail-strip img:first-child {
+  margin-left: 13vw;
+}

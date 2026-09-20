@@ -1,22 +1,18 @@
-import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { Resource } from "sst";
+import { dynamo } from "../dynamo";
+import { badRequest, json } from "../response";
 
-const dynamoDb = new DynamoDB.DocumentClient();
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  const projectId = event.pathParameters?.projectId;
+  if (!projectId) return badRequest("projectId is missing");
 
-export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-) => {
-  const getParams = {
-    TableName: Table.ProjectPhotos.tableName,
-    Key: {
-      projectId: event.pathParameters?.projectId,
-    },
-  };
+  const results = await dynamo.get({
+    TableName: Resource.ProjectPhotos.name,
+    Key: { projectId },
+  });
 
-  const results = await dynamoDb.get(getParams).promise();
-  return {
-    statusCode: 200,
-    body: JSON.stringify(results.Item),
-  };
+  if (!results.Item) return json(404, { error: "Project does not exist" });
+
+  return json(200, results.Item);
 };

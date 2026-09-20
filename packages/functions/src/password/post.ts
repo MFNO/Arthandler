@@ -1,88 +1,44 @@
-import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
-var bcrypt = require("bcryptjs");
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import bcrypt from "bcryptjs";
+import { Resource } from "sst";
+import { dynamo } from "../dynamo";
+import { badRequest, json } from "../response";
 
-const dynamoDb = new DynamoDB.DocumentClient();
+type PasswordChange = {
+  username: string;
+  password: string;
+  newPassword: string;
+};
 
-export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-) => {
-  if (!event || !event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "body is missing" }),
-    };
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  if (!event.body) return badRequest("body is missing");
+
+  const input = JSON.parse(event.body) as PasswordChange;
+
+  if (!input.username || !input.password || !input.newPassword) {
+    return badRequest("invalid parameters");
   }
 
-  const input: Input = JSON.parse(event.body);
+  const results = await dynamo.get({
+    TableName: Resource.Users.name,
+    Key: { username: input.username },
+  });
 
-  if (!input || !input.username || !input.password || !input.newPassword) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
-    };
+  if (!results.Item) return badRequest("Username does not exist");
+
+  if (!(await bcrypt.compare(input.password, results.Item.password))) {
+    return badRequest("Incorrect password");
   }
 
-  console.log(input);
+  const hash = await bcrypt.hash(input.newPassword, 10);
 
-  const getParams = {
-    TableName: Table.Users.tableName,
-    Key: {
-      username: input.username,
-    },
-  };
+  await dynamo.update({
+    TableName: Resource.Users.name,
+    Key: { username: input.username },
+    UpdateExpression: "SET #password = :password",
+    ExpressionAttributeNames: { "#password": "password" },
+    ExpressionAttributeValues: { ":password": hash },
+  });
 
-  const results = await dynamoDb.get(getParams).promise();
-
-  if (!results.Item) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        StatusCode: 400,
-        Error: "Username does not exist",
-      }),
-    };
-  }
-  if (!bcrypt.compareSync(input.password, results.Item.password)) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        StatusCode: 400,
-        Error: "Incorrect password",
-      }),
-    };
-  }
-
-  var salt = bcrypt.genSaltSync(10);
-  var hash = bcrypt.hashSync(input.newPassword, salt);
-  console.log("hash", hash);
-  const putParams = {
-    TableName: Table.Users.tableName,
-    Key: {
-      username: input.username,
-    },
-    // Update the "password" column
-    UpdateExpression: "SET password = :password",
-    ExpressionAttributeValues: {
-      ":password": hash,
-    },
-  };
-  await dynamoDb.update(putParams).promise();
-
-  return {
-    statusCode: 200,
-  };
+  return json(200);
 };

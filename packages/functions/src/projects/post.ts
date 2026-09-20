@@ -1,50 +1,33 @@
-import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
-import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { Resource } from "sst";
+import { dynamo } from "../dynamo";
+import { badRequest, json } from "../response";
 
-const dynamoDb = new DynamoDB.DocumentClient();
+type NewProject = {
+  projectName: string;
+  projectIndex: number;
+};
 
-export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-) => {
-  if (!event || !event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "body is missing" }),
-    };
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  if (!event.body) return badRequest("body is missing");
+
+  const input = JSON.parse(event.body) as NewProject;
+
+  if (!input.projectName || typeof input.projectIndex !== "number") {
+    return badRequest("invalid parameters");
   }
 
-  const input: Input = JSON.parse(event.body);
-  console.log(input);
+  const projectId = randomUUID();
 
-  if (!input || !input.projectName || !input.projectIndex) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
-    };
-  }
-
-  console.log(input);
-
-  const putParams: DocumentClient.PutItemInput = {
-    TableName: Table.ProjectPhotos.tableName,
+  await dynamo.put({
+    TableName: Resource.ProjectPhotos.name,
     Item: {
-      projectId: uuidv4(),
+      projectId,
       projectName: input.projectName,
       projectIndex: input.projectIndex,
     },
-  };
-  await dynamoDb.put(putParams).promise();
+  });
 
-  return {
-    statusCode: 200,
-  };
+  return json(200, { projectId });
 };

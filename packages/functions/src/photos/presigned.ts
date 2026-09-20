@@ -1,73 +1,44 @@
-import type {
-  APIGatewayProxyEventV2,
-  APIGatewayProxyResultV2,
-} from "aws-lambda";
-import { S3 } from "aws-sdk";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { Resource } from "sst";
+import { badRequest, json } from "../response";
 
-if (!process.env.BUCKET_NAME)
-  throw new Error("Environment variable Bucket name is required.");
+const s3 = new S3Client({});
 
-export async function handler(
-  event: APIGatewayProxyEventV2
-): Promise<APIGatewayProxyResultV2> {
-  if (!event || !event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        StatusCode: 400,
-        Error: "body is missing or is missing the correct parameters ",
-      }),
-    };
-  }
+type PresignRequest = {
+  number: number;
+  projectId: string;
+};
 
-  const input: Input = JSON.parse(event.body);
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  if (!event.body) return badRequest("body is missing");
 
-  if (!input || !input.number || !input.projectId) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
-    };
-  }
+  const input = JSON.parse(event.body) as PresignRequest;
 
-  console.log("Event is", JSON.stringify(event, null, 2));
+  if (!input.number || !input.projectId) return badRequest("invalid parameters");
+
   try {
-    const number = input.number;
-    const urls = [];
-    const s3 = new S3();
-    for (let x = 0; x < number; x++) {
-      const presignedPost = s3.getSignedUrl("putObject", {
-        Bucket: process.env.BUCKET_NAME,
-        Key: uuidv4(), //filename
-        Expires: 100, //time to expire in seconds
-        ContentType: "image/*",
-      });
-      urls.push(presignedPost);
-    }
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        urls,
-      }),
-    };
+    const urls = await Promise.all(
+      Array.from({ length: input.number }, () =>
+        getSignedUrl(
+          s3,
+          new PutObjectCommand({
+            Bucket: Resource.Photos.name,
+            Key: randomUUID(),
+            ContentType: "image/*",
+          }),
+          { expiresIn: 100 },
+        ),
+      ),
+    );
+
+    return json(200, { urls });
   } catch (error: unknown) {
-    console.log("ERROR is:", error);
-    if (error instanceof Error) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: error.message }),
-      };
-    }
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: JSON.stringify(error) }),
-    };
+    console.error("Failed to presign upload urls", error);
+    return badRequest(
+      error instanceof Error ? error.message : "could not presign urls",
+    );
   }
-}
+};

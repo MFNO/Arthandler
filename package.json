@@ -3,29 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "sst dev --stage dev --profile ArtHandlerDev",
-    "build": "sst build --profile ArtHandlerDev",
-    "deploy": "sst deploy --stage work --profile ArtHandlerDev",
-    "remove": "sst remove --profile ArtHandlerDev",
-    "console": "sst console --profile ArtHandlerDev",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@tsconfig/node16": "^1.0.4",
-    "aws-cdk-lib": "2.91.0",
-    "constructs": "10.2.69",
-    "sst": "2.24.3",
-    "typescript": "^5.1.3"
-  },
   "workspaces": [
     "packages/*"
   ],
-  "dependencies": {
-    "flowbite": "^1.6.6",
-    "localforage": "^1.10.0",
-    "match-sorter": "^6.3.1",
-    "react-router-dom": "^6.13.0",
-    "sort-by": "^1.2.0"
+  "scripts": {
+    "dev": "sst dev",
+    "diff": "sst diff --stage dev",
+    "deploy": "sst deploy --stage dev",
+    "remove": "sst remove --stage dev",
+    "typecheck": "tsc --noEmit && npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.6",
+    "sst": "^4.17.1",
+    "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   }
 }

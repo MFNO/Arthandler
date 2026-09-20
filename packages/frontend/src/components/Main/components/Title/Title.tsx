@@ -1,7 +1,14 @@
-import "./Title.css";
+import { Typography } from "antd";
 
 function Title() {
-  return <h1 className="m-16 hidden md:block text-center">de Guzman</h1>;
+  return (
+    <Typography.Title
+      level={1}
+      style={{ textAlign: "center", margin: "4rem 0", fontWeight: 300 }}
+    >
+      de Guzman
+    </Typography.Title>
+  );
 }
 
 export default Title;

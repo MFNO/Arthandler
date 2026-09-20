@@ -1,66 +1,32 @@
-import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
-var bcrypt = require("bcryptjs");
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import bcrypt from "bcryptjs";
+import { Resource } from "sst";
+import { dynamo } from "../dynamo";
+import { badRequest, json } from "../response";
 
-const dynamoDb = new DynamoDB.DocumentClient();
+type Credentials = {
+  username: string;
+  password: string;
+};
 
-export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-) => {
-  if (!event || !event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "body is missing" }),
-    };
-  }
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  if (!event.body) return badRequest("body is missing");
 
-  const input: Input = JSON.parse(event.body);
+  const input = JSON.parse(event.body) as Credentials;
 
-  if (!input || !input.username || !input.password) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
-    };
-  }
+  if (!input.username || !input.password) return badRequest("invalid parameters");
 
-  console.log(input);
+  const results = await dynamo.get({
+    TableName: Resource.Users.name,
+    Key: { username: input.username },
+  });
 
-  const getParams = {
-    TableName: Table.Users.tableName,
-    Key: {
-      username: input.username,
-    },
-  };
-  console.log(getParams);
+  if (!results.Item) return badRequest("Username does not exist");
 
-  //check queried hash
-  const results = await dynamoDb.get(getParams).promise();
+  const isAuthenticated = await bcrypt.compare(
+    input.password,
+    results.Item.password,
+  );
 
-
-  if (!results.Item) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({
-        StatusCode: 400,
-        Error: "Username does not exist",
-      }),
-    };
-  }
-
-  const check = bcrypt.compareSync(input.password, results.Item.password);
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ isAuthenticated: check }),
-  };
+  return json(200, { isAuthenticated });
 };

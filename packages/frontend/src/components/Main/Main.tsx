@@ -1,31 +1,38 @@
 import { useState } from "react";
-import "./Main.css";
+import { Layout } from "antd";
 import CarouselWrapper from "./components/Carousel/Carousel";
 import Footer from "./components/Footer/Footer";
 import Navigation from "./components/Navigation/Navigation";
 import Title from "./components/Title/Title";
-import { Project } from "../../types/Project";
+import type { Project } from "../../types/Project";
 
 type MainProps = {
-  projects: Array<Project>;
+  projects: Project[];
 };
 
-function Main(props: MainProps) {
-  const [selectedProject, setSelectedProject] = useState<Project>(
-    props.projects[0]
+function Main({ projects }: MainProps) {
+  const [selectedProject, setSelectedProject] = useState<Project | undefined>(
+    projects[0],
   );
 
   return (
-    <>
-      <Title></Title>
-      <Navigation
-        selectedProject={selectedProject}
-        projects={props.projects}
-        setSelectedProject={setSelectedProject}
-      ></Navigation>
-      <CarouselWrapper project={selectedProject}></CarouselWrapper>
-      <Footer></Footer>
-    </>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Layout.Content>
+        <Title />
+        <Navigation
+          projects={projects}
+          selectedProject={selectedProject}
+          setSelectedProject={setSelectedProject}
+        />
+        {selectedProject && (
+          <CarouselWrapper
+            key={selectedProject.projectId}
+            project={selectedProject}
+          />
+        )}
+      </Layout.Content>
+      <Footer />
+    </Layout>
   );
 }
 

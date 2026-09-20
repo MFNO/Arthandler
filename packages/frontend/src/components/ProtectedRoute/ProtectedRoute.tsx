@@ -1,17 +1,15 @@
-import "./ProtectedRoute.css";
+import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
-type ProtectedProps = {
+type ProtectedRouteProps = {
   authenticated: boolean;
-  children: any;
+  children: ReactNode;
 };
 
-const ProtectedRoute = (props: ProtectedProps) => {
-  if (!props.authenticated) {
-    return <Navigate to="/login" replace />;
-  }
+function ProtectedRoute({ authenticated, children }: ProtectedRouteProps) {
+  if (!authenticated) return <Navigate to="/login" replace />;
 
-  return props.children;
-};
+  return children;
+}
 
 export default ProtectedRoute;

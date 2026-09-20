@@ -1,57 +1,49 @@
-import { useState, useEffect, createRef } from "react";
 import axios from "axios";
-import ManagePhoto from "./ManagePhoto";
-import { Project } from "../../../../types/Project";
-import AWS from "aws-sdk";
+import { App, Button, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import type { UploadProps } from "antd";
+import { projectsApi } from "../../../../api";
 
 type ManagePhotosProps = {
-  selectedProjectId: string;
+  selectedProjectId?: string;
 };
 
-function ManagePhotos(props: ManagePhotosProps) {
-  const [loading, setLoading] = useState(false);
-  const imageInput = createRef();
+function ManagePhotos({ selectedProjectId }: ManagePhotosProps) {
+  const { message } = App.useApp();
 
-  const addPhotos = async () => {
-    axios
+  const customRequest: UploadProps["customRequest"] = async ({
+    file,
+    onSuccess,
+    onError,
+  }) => {
+    try {
+      const { data } = await projectsApi.post<{ urls: string[] }>(
+        "/projects/presigned",
+        { number: 1, projectId: selectedProjectId },
+      );
 
-      .post(`${import.meta.env.VITE_APP_PROJECTS_API_URL}/projects/presigned`, {
-        number: imageInput.current.files.length,
-        projectId: props.selectedProjectId,
-      })
-      .then((response) => {
-        postToS3(response.data.urls);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
+      await axios.put(data.urls[0], file, {
+        headers: { "Content-Type": "image/*" },
       });
-  };
 
-  const postToS3 = (urls: string[]) => {
-    var options = {
-      headers: { "Content-Type": "image/*" },
-    };
-    for (let x = 0; x < urls.length; x++) {
-      console.log(imageInput.current.files);
-      console.log(urls[x]);
-      axios
-        .put(urls[x], imageInput.current.files[x], options)
-        .then((response) => console.log(response));
+      onSuccess?.({});
+    } catch (error) {
+      onError?.(error as Error);
+      message.error("Could not upload photo");
     }
   };
+
   return (
-    <>
-      <div className="w-full flex-col flex items-center gap-4 mt-16">
-        <input ref={imageInput} type="file" name="photos" multiple />
-        <button
-          onClick={addPhotos}
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Add Photos
-        </button>
-      </div>
-    </>
+    <Upload
+      multiple
+      accept="image/*"
+      customRequest={customRequest}
+      disabled={!selectedProjectId}
+    >
+      <Button icon={<UploadOutlined />} disabled={!selectedProjectId} block>
+        Add Photos
+      </Button>
+    </Upload>
   );
 }
 

@@ -1,44 +1,33 @@
-import "./Navigation.css";
-import { Project } from "../../../../types/Project";
-import { Navbar } from "flowbite-react";
+import { Menu } from "antd";
+import type { Project } from "../../../../types/Project";
 
 type NavigationProps = {
   projects: Project[];
+  selectedProject?: Project;
   setSelectedProject: (project: Project) => void;
-  selectedProject: Project;
 };
 
-function Navigation(props: NavigationProps) {
-  if (!props.projects || !props.selectedProject || !props.setSelectedProject)
-    return <></>;
+function Navigation({
+  projects,
+  selectedProject,
+  setSelectedProject,
+}: NavigationProps) {
+  if (projects.length === 0) return null;
 
   return (
-    <Navbar className="w-full bg-white border-gray-200 dark:bg-gray-900 mb-8">
-      <Navbar.Brand>
-        <span className="self-center flex whitespace-nowrap text-xl dark:text-white md:hidden">
-          De Guzman
-        </span>
-      </Navbar.Brand>
-      <div className="flex md:order-2">
-        <Navbar.Toggle />
-      </div>
-      <Navbar.Collapse className="[&>ul]:md:flex-row">
-        {props.projects.map((project, index) => (
-          <Navbar.Link
-            key={index}
-            onClick={() => props.setSelectedProject(project)}
-            href="#"
-            className={`font-light text-lg ${
-              props.selectedProject.projectId === project.projectId
-                ? " text-gray-400"
-                : "text-gray-800"
-            }`}
-          >
-            {project.projectName}
-          </Navbar.Link>
-        ))}
-      </Navbar.Collapse>
-    </Navbar>
+    <Menu
+      mode="horizontal"
+      selectedKeys={selectedProject ? [selectedProject.projectId] : []}
+      style={{ justifyContent: "center", borderBottom: "none" }}
+      items={projects.map((project) => ({
+        key: project.projectId,
+        label: project.projectName,
+      }))}
+      onClick={({ key }) => {
+        const project = projects.find((item) => item.projectId === key);
+        if (project) setSelectedProject(project);
+      }}
+    />
   );
 }
 

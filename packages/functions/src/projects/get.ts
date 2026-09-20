@@ -1,17 +1,12 @@
-import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
-
-const dynamoDb = new DynamoDB.DocumentClient();
+import { Resource } from "sst";
+import { dynamo } from "../dynamo";
+import { json } from "../response";
 
 export async function handler() {
-  const params = {
-    TableName: Table.ProjectPhotos.tableName,
+  const results = await dynamo.scan({
+    TableName: Resource.ProjectPhotos.name,
     ProjectionExpression: "projectId, projectName, projectIndex",
-  };
-  const results = await dynamoDb.scan(params).promise();
+  });
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(results.Items),
-  };
+  return json(200, results.Items ?? []);
 }

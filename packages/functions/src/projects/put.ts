@@ -1,60 +1,42 @@
-import { DynamoDB } from "aws-sdk";
-import { Table } from "sst/node/table";
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
-import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
-import { v4 as uuidv4 } from "uuid";
+import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { Resource } from "sst";
+import { dynamo } from "../dynamo";
+import { badRequest, json } from "../response";
 
-const dynamoDb = new DynamoDB.DocumentClient();
+type ProjectUpdate = {
+  projectId: string;
+  projectName: string;
+  projectIndex: number;
+};
 
-export const handler: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEvent
-) => {
-  if (!event || !event.body) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "body is missing" }),
-    };
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  if (!event.body) return badRequest("body is missing");
+
+  const input = JSON.parse(event.body) as ProjectUpdate[];
+
+  if (!Array.isArray(input) || input.length === 0) {
+    return badRequest("no project to update");
   }
 
-  const input: Input = JSON.parse(event.body);
-  if (!input.length > 0) {
-    return {
-      statusCode: 400,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify({ StatusCode: 400, Error: "no project to update" }),
-    };
-  }
-  for (const project of input) {
-    if (!project || !project.projectName || project.projectIndex < 0) {
-      return {
-        statusCode: 400,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
+  const invalid = input.some(
+    (project) =>
+      !project?.projectId || !project.projectName || project.projectIndex < 0,
+  );
+  if (invalid) return badRequest("invalid parameters");
+
+  await Promise.all(
+    input.map((project) =>
+      dynamo.update({
+        TableName: Resource.ProjectPhotos.name,
+        Key: { projectId: project.projectId },
+        UpdateExpression: "set projectName = :pn, projectIndex = :pi",
+        ExpressionAttributeValues: {
+          ":pn": project.projectName,
+          ":pi": project.projectIndex,
         },
-        body: JSON.stringify({ StatusCode: 400, Error: "invalid parameters" }),
-      };
-    }
+      }),
+    ),
+  );
 
-    console.log(project);
-
-    const updateParams: DocumentClient.UpdateItemInput = {
-      TableName: Table.ProjectPhotos.tableName,
-      Key: { projectId: project.projectId },
-      UpdateExpression: "set projectName = :pn, projectIndex = :pi",
-      ExpressionAttributeValues: {
-        ":pn": project.projectName,
-        ":pi": project.projectIndex,
-      },
-    };
-    await dynamoDb.update(updateParams).promise();
-  }
-
-  return {
-    statusCode: 200,
-  };
+  return json(200);
 };
