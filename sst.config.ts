@@ -111,19 +111,15 @@ export default $config({
         allowHeaders: ["*"],
       },
       transform: {
+        // defaultRouteSettings rather than per-route settings: the stage is
+        // created before the routes exist, so API Gateway rejects routeSettings
+        // that name a route key it can't find yet. Both routes on this API are
+        // auth endpoints and want the same limit anyway.
         stage: (args: aws.apigatewayv2.StageArgs) => {
-          args.routeSettings = [
-            {
-              routeKey: "POST /login",
-              throttlingBurstLimit: 5,
-              throttlingRateLimit: 1,
-            },
-            {
-              routeKey: "POST /password",
-              throttlingBurstLimit: 5,
-              throttlingRateLimit: 1,
-            },
-          ];
+          args.defaultRouteSettings = {
+            throttlingBurstLimit: 5,
+            throttlingRateLimit: 1,
+          };
         },
       },
     });
