@@ -1,43 +1,59 @@
-import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import type { APIGatewayProxyHandlerV2WithLambdaAuthorizer } from "aws-lambda";
 import bcrypt from "bcryptjs";
 import { Resource } from "sst";
 import { dynamo } from "../dynamo";
 import { badRequest, json } from "../response";
 
 type PasswordChange = {
-  username: string;
   password: string;
   newPassword: string;
 };
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+const MIN_PASSWORD_LENGTH = 12;
+
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{
+  username: string;
+}> = async (event) => {
+  // The account is taken from the verified token, never from the request body,
+  // so one user can't target another.
+  const username = event.requestContext.authorizer?.lambda?.username;
+  if (!username) return json(401, { error: "Unauthorized" });
+
   if (!event.body) return badRequest("body is missing");
 
   const input = JSON.parse(event.body) as PasswordChange;
 
-  if (!input.username || !input.password || !input.newPassword) {
+  if (!input.password || !input.newPassword) {
     return badRequest("invalid parameters");
+  }
+
+  if (input.newPassword.length < MIN_PASSWORD_LENGTH) {
+    return badRequest(
+      `new password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    );
   }
 
   const results = await dynamo.get({
     TableName: Resource.Users.name,
-    Key: { username: input.username },
+    Key: { username },
   });
 
-  if (!results.Item) return badRequest("Username does not exist");
+  if (!results.Item) return json(401, { error: "Unauthorized" });
 
   if (!(await bcrypt.compare(input.password, results.Item.password))) {
     return badRequest("Incorrect password");
   }
 
-  const hash = await bcrypt.hash(input.newPassword, 10);
-
   await dynamo.update({
     TableName: Resource.Users.name,
-    Key: { username: input.username },
-    UpdateExpression: "SET #password = :password",
+    Key: { username },
+    UpdateExpression:
+      "SET #password = :password, failedAttempts = :zero, lockedUntil = :zero",
     ExpressionAttributeNames: { "#password": "password" },
-    ExpressionAttributeValues: { ":password": hash },
+    ExpressionAttributeValues: {
+      ":password": await bcrypt.hash(input.newPassword, 10),
+      ":zero": 0,
+    },
   });
 
   return json(200);

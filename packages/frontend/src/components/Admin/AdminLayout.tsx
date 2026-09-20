@@ -8,6 +8,7 @@ type AdminLayoutProps = {
 const items = [
   { key: "/management", label: <Link to="/management">Photos</Link> },
   { key: "/add-project", label: <Link to="/add-project">Projects</Link> },
+  { key: "/password", label: <Link to="/password">Password</Link> },
   { key: "/", label: <Link to="/">View site</Link> },
 ];
 

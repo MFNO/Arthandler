@@ -16,9 +16,10 @@ export default $config({
     };
   },
   async run() {
-    // Placeholder lets non-production stages deploy without a manual secret set.
-    // Set a real one with: npx sst secret set JwtSecret "$(openssl rand -hex 32)"
-    const jwtSecret = new sst.Secret("JwtSecret", "local-dev-secret-change-me");
+    // No placeholder on purpose: the repo is public, so a fallback value would
+    // be a published signing key. Deploys fail until the secret is set with:
+    //   npx sst secret set JwtSecret "$(openssl rand -hex 32)" --stage <stage>
+    const jwtSecret = new sst.Secret("JwtSecret");
 
     const photos = new sst.aws.Bucket("Photos", {
       access: "public",
@@ -109,12 +110,40 @@ export default $config({
         allowOrigins: ["*"],
         allowHeaders: ["*"],
       },
+      transform: {
+        stage: (args: aws.apigatewayv2.StageArgs) => {
+          args.routeSettings = [
+            {
+              routeKey: "POST /login",
+              throttlingBurstLimit: 5,
+              throttlingRateLimit: 1,
+            },
+            {
+              routeKey: "POST /password",
+              throttlingBurstLimit: 5,
+              throttlingRateLimit: 1,
+            },
+          ];
+        },
+      },
+    });
+
+    const usersAuthorizer = usersApi.addAuthorizer({
+      name: "jwt",
+      lambda: {
+        function: {
+          handler: "packages/functions/src/auth/authorizer.handler",
+          link: [jwtSecret],
+        },
+        response: "simple",
+      },
     });
 
     usersApi.route("POST /login", "packages/functions/src/login/post.handler");
     usersApi.route(
       "POST /password",
       "packages/functions/src/password/post.handler",
+      { auth: { lambda: usersAuthorizer.id } },
     );
 
     const site = new sst.aws.StaticSite("ReactSite", {

@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { App, Button, Card, Flex, Form, Input } from "antd";
 import { usersApi } from "../../api";
 
 type PasswordChange = {
-  username: string;
   password: string;
   newPassword: string;
 };
+
+const MIN_PASSWORD_LENGTH = 12;
 
 function Password() {
   const [loading, setLoading] = useState(false);
@@ -27,8 +27,8 @@ function Password() {
   };
 
   return (
-    <Flex justify="center" style={{ marginTop: "9rem" }}>
-      <Card title="Update password" style={{ width: 320 }}>
+    <Flex justify="center" style={{ marginTop: "2rem" }}>
+      <Card title="Update password" style={{ width: 360 }}>
         <Form
           form={form}
           layout="vertical"
@@ -36,32 +36,28 @@ function Password() {
           requiredMark={false}
         >
           <Form.Item
-            name="username"
-            label="Username"
-            rules={[{ required: true, message: "Username is required" }]}
-          >
-            <Input autoComplete="username" />
-          </Form.Item>
-          <Form.Item
             name="password"
-            label="Old password"
-            rules={[{ required: true, message: "Old password is required" }]}
+            label="Current password"
+            rules={[{ required: true, message: "Current password is required" }]}
           >
             <Input.Password autoComplete="current-password" />
           </Form.Item>
           <Form.Item
             name="newPassword"
             label="New password"
-            rules={[{ required: true, message: "New password is required" }]}
+            rules={[
+              { required: true, message: "New password is required" },
+              {
+                min: MIN_PASSWORD_LENGTH,
+                message: `At least ${MIN_PASSWORD_LENGTH} characters`,
+              },
+            ]}
           >
             <Input.Password autoComplete="new-password" />
           </Form.Item>
-          <Flex justify="space-between" align="center">
-            <Link to="/login">Login</Link>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Submit
-            </Button>
-          </Flex>
+          <Button type="primary" htmlType="submit" block loading={loading}>
+            Update password
+          </Button>
         </Form>
       </Card>
     </Flex>

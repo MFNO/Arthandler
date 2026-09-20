@@ -54,7 +54,6 @@ function App() {
           path="login"
           element={<Login setAuthenticated={setAuthenticated} />}
         />
-        <Route path="password" element={<Password />} />
         <Route
           element={
             <ProtectedRoute authenticated={authenticated}>
@@ -64,6 +63,7 @@ function App() {
         >
           <Route path="management" element={<Management projects={projects} />} />
           <Route path="add-project" element={<ManageProjects />} />
+          <Route path="password" element={<Password />} />
         </Route>
       </Routes>
     </BrowserRouter>

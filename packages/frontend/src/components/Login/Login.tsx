@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { App, Button, Card, Flex, Form, Input } from "antd";
 import { usersApi } from "../../api";
 import { setToken } from "../../auth";
@@ -49,12 +49,9 @@ function Login({ setAuthenticated }: LoginProps) {
           >
             <Input.Password autoComplete="current-password" />
           </Form.Item>
-          <Flex justify="space-between" align="center">
-            <Link to="/password">Update password</Link>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Submit
-            </Button>
-          </Flex>
+          <Button type="primary" htmlType="submit" block loading={loading}>
+            Sign in
+          </Button>
         </Form>
       </Card>
     </Flex>
